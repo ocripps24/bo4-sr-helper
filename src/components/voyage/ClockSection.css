@@ -131,7 +131,7 @@
 	padding: 6px;
 }
 
-.symbol-btn:hover:not(:disabled) {
+.symbol-btn:hover:not(:disabled):not(.symbol-btn--faded) {
 	border-color: var(--primary-color);
 	color: var(--primary-color);
 	background-color: var(--surface);
@@ -139,8 +139,9 @@
 
 .symbol-btn--selected {
 	border-color: var(--primary-color);
-	background-color: var(--primary-color);
-	color: white;
+	border-width: 3px;
+	background-color: transparent;
+	color: var(--primary-color);
 }
 
 .symbol-btn--disabled {
@@ -148,6 +149,12 @@
 	cursor: not-allowed;
 	border-color: var(--border);
 	color: var(--text-secondary);
+}
+
+.symbol-btn--faded {
+	opacity: 0.25;
+	filter: grayscale(70%);
+	pointer-events: none;
 }
 
 .symbol-btn:focus {

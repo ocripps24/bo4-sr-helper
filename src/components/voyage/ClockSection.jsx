@@ -248,6 +248,12 @@ function ClockSection({ data, onChange }) {
 											const IconComponent = SYMBOL_ICONS[symbol];
 											const isSymbolSelected = clockData.symbol === symbol;
 											const isDisabled = !availableSymbols.includes(symbol);
+											const usedSymbols = getUsedSymbols();
+											const isSymbolUsedElsewhere =
+												usedSymbols.includes(symbol) && !isSymbolSelected;
+											const shouldFade =
+												isSymbolUsedElsewhere ||
+												(clockData.symbol && clockData.symbol !== symbol);
 
 											return (
 												<button
@@ -257,7 +263,9 @@ function ClockSection({ data, onChange }) {
 													}
 													className={`symbol-btn ${
 														isSymbolSelected ? "symbol-btn--selected" : ""
-													} ${isDisabled ? "symbol-btn--disabled" : ""}`}
+													} ${isDisabled ? "symbol-btn--disabled" : ""} ${
+														shouldFade && !isDisabled ? "symbol-btn--faded" : ""
+													}`}
 													disabled={isDisabled}
 													title={SYMBOL_NAMES[symbol]}
 													type="button"
