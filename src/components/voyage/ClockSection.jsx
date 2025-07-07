@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./ClockSection.css";
 import { SYMBOL_ICONS, SYMBOL_NAMES } from "./SymbolIcons";
 
@@ -29,6 +29,7 @@ const getInitialData = () => {
 
 function ClockSection({ data, onChange }) {
 	const [localData, setLocalData] = useState(data || getInitialData());
+	const isInitializing = useRef(true);
 
 	// Load from localStorage on mount or when parent data changes (reset)
 	useEffect(() => {
@@ -73,26 +74,30 @@ function ClockSection({ data, onChange }) {
 						}
 					});
 					setLocalData(convertedData);
-					onChange(convertedData);
 				} catch (e) {
 					console.error("Failed to parse clock data:", e);
 					const initial = getInitialData();
 					setLocalData(initial);
-					onChange(initial);
 				}
 			} else {
 				const initial = getInitialData();
 				setLocalData(initial);
-				onChange(initial);
 			}
 		}
+		isInitializing.current = true;
 	}, [data]);
 
 	// Save to localStorage and update parent when data changes
 	useEffect(() => {
 		localStorage.setItem("voyage-clock-data", JSON.stringify(localData));
-		onChange(localData);
-	}, [localData, onChange]);
+
+		// Only call onChange after initial load is complete
+		if (!isInitializing.current) {
+			onChange(localData);
+		} else {
+			isInitializing.current = false;
+		}
+	}, [localData]); // Removed onChange from dependencies to prevent infinite loop
 
 	const handleHourChange = (locationId, hour) => {
 		// Allow only numbers and limit to reasonable hour values

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./ClockSection.css";
 
 const PLANETS = [
@@ -26,6 +26,7 @@ const PLANET_LOCATIONS = {
 
 function PlanetSection({ data, onChange }) {
 	const [localData, setLocalData] = useState(data);
+	const isInitializing = useRef(true);
 
 	// Load from localStorage on mount or when parent data changes (reset)
 	useEffect(() => {
@@ -40,26 +41,30 @@ function PlanetSection({ data, onChange }) {
 				try {
 					const parsedData = JSON.parse(saved);
 					setLocalData(parsedData);
-					onChange(parsedData);
 				} catch (e) {
 					console.error("Failed to parse planet data:", e);
 					const initial = [];
 					setLocalData(initial);
-					onChange(initial);
 				}
 			} else {
 				const initial = [];
 				setLocalData(initial);
-				onChange(initial);
 			}
 		}
+		isInitializing.current = true;
 	}, [data]);
 
 	// Save to localStorage and update parent when data changes
 	useEffect(() => {
 		localStorage.setItem("voyage-planet-data", JSON.stringify(localData));
-		onChange(localData);
-	}, [localData, onChange]);
+
+		// Only call onChange after initial load is complete
+		if (!isInitializing.current) {
+			onChange(localData);
+		} else {
+			isInitializing.current = false;
+		}
+	}, [localData]); // Removed onChange from dependencies to prevent infinite loop
 
 	const addPlanet = (planet) => {
 		if (!localData.includes(planet)) {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./ClockSection.css";
 
 const OUTLET_LOCATIONS = [
@@ -26,6 +26,7 @@ const PORTAL_ORDER = [
 
 function OutletSection({ data, onChange }) {
 	const [localData, setLocalData] = useState(data);
+	const isInitializing = useRef(true);
 
 	// Load from localStorage on mount or when parent data changes (reset)
 	useEffect(() => {
@@ -39,26 +40,30 @@ function OutletSection({ data, onChange }) {
 				try {
 					const parsedData = JSON.parse(saved);
 					setLocalData(parsedData);
-					onChange(parsedData);
 				} catch (e) {
 					console.error("Failed to parse outlet data:", e);
 					const initial = {};
 					setLocalData(initial);
-					onChange(initial);
 				}
 			} else {
 				const initial = {};
 				setLocalData(initial);
-				onChange(initial);
 			}
 		}
+		isInitializing.current = true;
 	}, [data]);
 
 	// Save to localStorage and update parent when data changes
 	useEffect(() => {
 		localStorage.setItem("voyage-outlet-data", JSON.stringify(localData));
-		onChange(localData);
-	}, [localData, onChange]);
+
+		// Only call onChange after initial load is complete
+		if (!isInitializing.current) {
+			onChange(localData);
+		} else {
+			isInitializing.current = false;
+		}
+	}, [localData]); // Removed onChange from dependencies to prevent infinite loop
 
 	const handleCatalystSelect = (locationId, catalystId) => {
 		setLocalData((prev) => {

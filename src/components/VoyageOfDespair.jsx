@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
 	Link,
 	Routes,
@@ -93,14 +93,18 @@ function VoyageOfDespair() {
 		}
 	};
 
+	const handleClockChange = useCallback((data) => setClockData(data), []);
+	const handleOutletChange = useCallback((data) => setOutletData(data), []);
+	const handlePlanetChange = useCallback((data) => setPlanetData(data), []);
+
 	const getStepOnChange = (stepId) => {
 		switch (stepId) {
 			case "clocks":
-				return setClockData;
+				return handleClockChange;
 			case "outlets":
-				return setOutletData;
+				return handleOutletChange;
 			case "planets":
-				return setPlanetData;
+				return handlePlanetChange;
 			default:
 				return () => {};
 		}
