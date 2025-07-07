@@ -27,6 +27,7 @@ const PLANET_LOCATIONS = {
 function PlanetSection({ data, onChange }) {
 	const [localData, setLocalData] = useState(data);
 	const isInitializing = useRef(true);
+	const [draggedIndex, setDraggedIndex] = useState(null);
 
 	// Load from localStorage on mount or when parent data changes (reset)
 	useEffect(() => {
@@ -76,13 +77,35 @@ function PlanetSection({ data, onChange }) {
 		setLocalData((prev) => prev.filter((_, i) => i !== index));
 	};
 
-	const movePlanet = (fromIndex, toIndex) => {
+	const reorderPlanets = (fromIndex, toIndex) => {
 		setLocalData((prev) => {
 			const newData = [...prev];
 			const planet = newData.splice(fromIndex, 1)[0];
 			newData.splice(toIndex, 0, planet);
 			return newData;
 		});
+	};
+
+	const handleDragStart = (e, index) => {
+		setDraggedIndex(index);
+		e.dataTransfer.effectAllowed = "move";
+	};
+
+	const handleDragOver = (e) => {
+		e.preventDefault();
+		e.dataTransfer.dropEffect = "move";
+	};
+
+	const handleDrop = (e, dropIndex) => {
+		e.preventDefault();
+		if (draggedIndex !== null && draggedIndex !== dropIndex) {
+			reorderPlanets(draggedIndex, dropIndex);
+		}
+		setDraggedIndex(null);
+	};
+
+	const handleDragEnd = () => {
+		setDraggedIndex(null);
 	};
 
 	const clearAll = () => {
@@ -96,10 +119,8 @@ function PlanetSection({ data, onChange }) {
 	// Get display order with Sun automatically added at the end
 	const getDisplayOrder = () => {
 		const order = [...localData];
-		// Always add Sun at the end if we have any planets
-		if (order.length > 0) {
-			order.push("Sun");
-		}
+		// Always add Sun at the end (step 9)
+		order.push("Sun");
 		return order;
 	};
 
@@ -108,9 +129,15 @@ function PlanetSection({ data, onChange }) {
 	return (
 		<div className="section-card">
 			<div className="section-header">
-				<h3>Planet Order</h3>
+				<h3>
+					<span className="section-title__full">Planet Order</span>
+					<span className="section-title__short">Planets</span>
+				</h3>
 				<div className="section-status">
-					{localData.length}/8 planets ordered
+					<span className="section-status__full">
+						{localData.length}/8 planets ordered
+					</span>
+					<span className="section-status__short">{localData.length}/8</span>
 				</div>
 			</div>
 
@@ -119,12 +146,10 @@ function PlanetSection({ data, onChange }) {
 				as the final step.
 			</p>
 
-			{/* Available planets */}
-			<div className="available-planets">
-				<h4>Available Planets:</h4>
-				{getAvailablePlanets().length === 0 ? (
-					<div className="no-planets">All planets have been added</div>
-				) : (
+			{/* Available planets - only show when there are planets available */}
+			{getAvailablePlanets().length > 0 && (
+				<div className="available-planets">
+					<h4>Available Planets:</h4>
 					<div className="planet-grid">
 						{getAvailablePlanets().map((planet) => (
 							<button
@@ -136,69 +161,53 @@ function PlanetSection({ data, onChange }) {
 							</button>
 						))}
 					</div>
-				)}
-			</div>
+				</div>
+			)}
 
 			{/* Current planet order */}
 			<div className="planet-order">
 				<h4>Current Order:</h4>
-				{displayOrder.length === 0 ? (
-					<div className="planet-order-empty">No planets added yet</div>
-				) : (
-					<div className="planet-order-list">
-						{displayOrder.map((planet, index) => {
-							const isLastSun =
-								planet === "Sun" && index === displayOrder.length - 1;
-							// For Sun, always show 9 regardless of current index
-							const displayNumber = isLastSun ? 9 : index + 1;
-							return (
-								<div
-									key={`${planet}-${index}`}
-									className={`planet-order-item ${
-										isLastSun ? "planet-final" : ""
-									}`}
-								>
-									<span className="planet-number">{displayNumber}</span>
-									<div className="planet-info">
-										<span className="planet-name">
-											{planet} - {PLANET_LOCATIONS[planet]}
-										</span>
-									</div>
-									{!isLastSun && (
-										<div className="planet-controls">
-											{index > 0 && (
-												<button
-													onClick={() => movePlanet(index, index - 1)}
-													className="move-btn"
-													aria-label="Move up"
-												>
-													↑
-												</button>
-											)}
-											{index < localData.length - 1 && (
-												<button
-													onClick={() => movePlanet(index, index + 1)}
-													className="move-btn"
-													aria-label="Move down"
-												>
-													↓
-												</button>
-											)}
-											<button
-												onClick={() => removePlanet(index)}
-												className="remove-btn"
-												aria-label="Remove planet"
-											>
-												×
-											</button>
-										</div>
-									)}
+				<div className="planet-order-list">
+					{displayOrder.map((planet, index) => {
+						const isLastSun =
+							planet === "Sun" && index === displayOrder.length - 1;
+						// For Sun, always show 9 regardless of current index
+						const displayNumber = isLastSun ? 9 : index + 1;
+						return (
+							<div
+								key={`${planet}-${index}`}
+								className={`planet-order-item ${
+									isLastSun ? "planet-final" : ""
+								} ${
+									draggedIndex === index ? "planet-order-item--dragging" : ""
+								}`}
+								draggable={!isLastSun}
+								onDragStart={(e) => !isLastSun && handleDragStart(e, index)}
+								onDragOver={handleDragOver}
+								onDrop={(e) => handleDrop(e, index)}
+								onDragEnd={handleDragEnd}
+								onClick={() => !isLastSun && removePlanet(index)}
+								title={
+									isLastSun
+										? "Sun (Final step)"
+										: "Click to remove, drag to reorder"
+								}
+							>
+								<span className="planet-number">{displayNumber}</span>
+								<div className="planet-info">
+									<span className="planet-name">
+										{planet} - {PLANET_LOCATIONS[planet]}
+									</span>
 								</div>
-							);
-						})}
-					</div>
-				)}
-
+								{!isLastSun && (
+									<div className="planet-actions">
+										<span className="drag-handle">⋮⋮</span>
+									</div>
+								)}
+							</div>
+						);
+					})}
+				</div>
 				{localData.length > 0 && (
 					<button onClick={clearAll} className="btn btn-secondary clear-btn">
 						Clear All

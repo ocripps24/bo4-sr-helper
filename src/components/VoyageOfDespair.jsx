@@ -121,7 +121,6 @@ function VoyageOfDespair() {
 						Reset All Data
 					</button>
 				</div>
-				<h2>Voyage of Despair</h2>
 
 				{/* Step Navigation */}
 				<div className="step-navigation">

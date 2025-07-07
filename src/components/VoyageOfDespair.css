@@ -66,7 +66,7 @@
 
 .step-tab:hover {
 	border-color: var(--primary-color);
-	color: var(--primary-color);
+	/* color: var(--primary-color); */
 }
 
 .step-tab--active {
@@ -108,43 +108,87 @@
 }
 
 @media (max-width: 768px) {
+	/* Tighter overall spacing */
+	.voyage-header {
+		margin-bottom: 1rem;
+	}
+
+	/* Keep voyage-nav buttons on one line */
 	.voyage-nav {
-		flex-direction: column;
-		align-items: stretch;
+		gap: 0.5rem;
+		margin-bottom: 1rem;
 	}
 
 	.voyage-nav .btn {
-		width: 100%;
-		justify-content: center;
+		font-size: 0.875rem;
+		padding: 0.5rem 0.75rem;
 	}
 
+	/* Step navigation with tighter spacing */
+	.step-navigation {
+		margin-top: 1rem;
+		padding: 0.75rem;
+		margin-bottom: 0;
+	}
+
+	/* Step tabs - stretch full width, active takes remaining space */
 	.step-tabs {
-		flex-direction: column;
-		gap: 0.75rem;
+		gap: 0.25rem;
+		margin-bottom: 0;
+		width: 100%;
 	}
 
 	.step-tab {
+		flex: 0 0 auto; /* Don't grow equally */
+		min-width: 40px;
+		padding: 0.5rem 0.25rem;
+	}
+
+	/* Non-active tabs: fixed size */
+	.step-tab:not(.step-tab--active) {
+		flex: 0 0 40px;
+		width: 40px;
+		padding: 0.5rem 0.25rem;
+	}
+
+	/* Active tab: takes remaining available space */
+	.step-tab--active {
+		flex: 1; /* Take up remaining space */
+		padding: 0.5rem 0.75rem;
 		flex-direction: row;
-		justify-content: flex-start;
-		text-align: left;
-		padding: 1rem;
+		align-items: center;
+		gap: 0.5rem;
+		justify-content: center;
+	}
+
+	/* Hide step name on non-active tabs */
+	.step-tab .step-name {
+		display: none;
+	}
+
+	/* Show step name on active tab, inline with number */
+	.step-tab--active .step-name {
+		display: block;
+		margin: 0;
 	}
 
 	.step-number {
+		font-size: 1rem;
 		margin-bottom: 0;
-		margin-right: 0.75rem;
 	}
 
+	.step-tab--active .step-name {
+		font-size: 0.875rem;
+		font-weight: 500;
+	}
+
+	/* Hide step controls (Previous/Next buttons) on mobile */
 	.step-controls {
-		flex-direction: column;
-		gap: 0.75rem;
+		display: none;
 	}
 
-	.step-controls .btn {
-		max-width: none;
-	}
-
+	/* Tighter content spacing */
 	.voyage-content {
-		margin-top: 1.5rem;
+		margin-top: 1rem;
 	}
 }

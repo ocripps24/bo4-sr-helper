@@ -111,9 +111,17 @@ function OutletSection({ data, onChange }) {
 	return (
 		<div className="section-card">
 			<div className="section-header">
-				<h3>Outlet Locations & Catalysts</h3>
+				<h3>
+					<span className="section-title__full">
+						Outlet Locations & Catalysts
+					</span>
+					<span className="section-title__short">Outlets</span>
+				</h3>
 				<div className="section-status">
-					{assignedCount}/4 catalysts assigned
+					<span className="section-status__full">
+						{assignedCount}/4 catalysts assigned
+					</span>
+					<span className="section-status__short">{assignedCount}/4</span>
 				</div>
 			</div>
 
@@ -169,7 +177,12 @@ function OutletSection({ data, onChange }) {
 											disabled={isDisabled}
 											title={catalyst.name}
 										>
-											{catalyst.name}
+											<span className="catalyst-btn__full">
+												{catalyst.name}
+											</span>
+											<span className="catalyst-btn__short">
+												{catalyst.name.charAt(0)}
+											</span>
 										</button>
 									);
 								})}
