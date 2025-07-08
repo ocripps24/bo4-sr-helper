@@ -1,0 +1,542 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as *;
+@use "../abstracts/mixins" as *;
+
+// Clock section specific styles
+.section-card {
+	@include card;
+	@include card-mobile;
+
+	@include mobile {
+		// Add minimal padding to section content on mobile
+		.section-header,
+		.clock-grid,
+		.clock-helper,
+		.clock-preferences {
+			padding-left: space(lg);
+			padding-right: space(lg);
+		}
+
+		.section-header {
+			padding-top: space(lg);
+		}
+	}
+}
+
+.section-header {
+	@include flex-between;
+	margin-bottom: space(lg);
+
+	h3 {
+		color: color(primary);
+		margin-bottom: 0;
+	}
+}
+
+.section-status {
+	background-color: color(surface);
+	padding: space(xs) space(md);
+	border-radius: radius(full);
+	font-size: font-size(sm);
+	color: color(text-secondary);
+	border: 1px solid color(border);
+}
+
+// Responsive section titles and status
+.section-title__full,
+.section-status__full {
+	@include mobile {
+		display: none;
+	}
+}
+
+.section-title__short,
+.section-status__short {
+	display: none;
+
+	@include mobile {
+		display: block;
+	}
+}
+
+.section-description {
+	display: none; // Hidden for all device sizes - users know what they're doing
+}
+
+// Clock grid layout
+.clock-grid {
+	@include responsive-grid(1, 1, 2, space(lg));
+
+	& {
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	}
+}
+
+.clock-location {
+	background-color: color(background);
+	border: 1px solid color(border);
+	border-radius: radius(base);
+	padding: space(2xl);
+	transition: transition(base);
+
+	&--active {
+		border-color: color(primary);
+		background-color: color(surface);
+		box-shadow: 0 0 0 1px color(primary);
+	}
+
+	&-header {
+		@include flex-center;
+		gap: space(md);
+		margin-bottom: space(lg);
+		justify-content: flex-start;
+
+		h4 {
+			margin: 0;
+			color: color(text-primary);
+			font-size: font-size(base);
+		}
+	}
+}
+
+.clock-inputs {
+	@include flex-column;
+	gap: space(lg);
+}
+
+.time-inputs {
+	display: flex;
+	gap: space(lg);
+}
+
+// Outlet section styles (shared with clock styles)
+.outlet-grid {
+	@include responsive-grid(1, 2, 3, space(lg));
+
+	& {
+		margin-bottom: space(3xl);
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	}
+}
+
+.outlet-location {
+	border: 1px solid color(border);
+	border-radius: radius(base);
+	padding: space(lg);
+	background-color: color(surface);
+	transition: transition(base);
+
+	&--selected {
+		border-color: color(primary);
+		background-color: color(background);
+		box-shadow: 0 0 0 1px color(primary);
+	}
+
+	&--disabled {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+
+	&-title {
+		margin: 0 0 space(lg) 0;
+		color: color(text-primary);
+		font-size: font-size(base);
+		text-align: center;
+	}
+}
+
+.catalyst-buttons {
+	@include grid(2, space(sm));
+
+	@include mobile {
+		grid-template-columns: repeat(4, 1fr);
+		gap: space(xs);
+	}
+}
+
+// Planet section styles
+.planet-grid {
+	@include responsive-grid(1, 2, 3, space(lg));
+}
+
+.planet-item {
+	@include flex-center;
+	padding: space(lg);
+	background-color: color(surface);
+	border: 1px solid color(border);
+	border-radius: radius(base);
+	cursor: pointer;
+	transition: transition(base);
+	font-weight: font-weight(medium);
+
+	&:hover {
+		background-color: color(background);
+		border-color: color(primary);
+		color: color(primary);
+	}
+
+	&--selected {
+		background-color: color(primary);
+		color: white;
+		border-color: color(primary);
+	}
+
+	@include mobile {
+		padding: space(md);
+		font-size: font-size(sm);
+	}
+}
+
+// Available planets section
+.available-planets {
+	margin-bottom: space(3xl);
+
+	h4 {
+		margin: 0 0 space(lg) 0;
+		color: color(text-primary);
+		font-size: font-size(base);
+	}
+}
+
+// Planet button for selection
+.planet-btn {
+	@include button-base;
+	padding: space(md) space(lg);
+	border: 1px solid color(border);
+	background-color: color(background);
+	color: color(text-primary);
+	font-size: font-size(sm);
+	font-weight: font-weight(medium);
+	transition: transition(base);
+
+	&:hover {
+		border-color: color(primary);
+		color: color(primary);
+		background-color: color(surface);
+	}
+
+	@include mobile {
+		padding: space(sm) space(md);
+		font-size: font-size(xs);
+	}
+}
+
+.planet-order {
+	@include flex-column;
+	gap: space(sm);
+
+	h4 {
+		margin: 0 0 space(lg) 0;
+		color: color(text-primary);
+		font-size: font-size(base);
+	}
+
+	&-list {
+		@include flex-column;
+		gap: space(sm);
+	}
+
+	&-item {
+		@include flex-between;
+		padding: space(md);
+		background-color: color(background);
+		border: 1px solid color(border);
+		border-radius: radius(base);
+		cursor: grab;
+		transition: transition(base);
+
+		&:active {
+			cursor: grabbing;
+		}
+
+		&:hover {
+			border-color: color(primary);
+			box-shadow: shadow(sm);
+		}
+
+		&--dragging {
+			opacity: 0.5;
+			transform: rotate(2deg);
+		}
+	}
+
+	&-content {
+		@include flex-center;
+		gap: space(md);
+		justify-content: flex-start;
+
+		.step-number {
+			@include flex-center;
+			@include touch-target(32px);
+			background-color: color(primary);
+			color: white;
+			border-radius: radius(full);
+			font-weight: font-weight(semibold);
+			font-size: font-size(sm);
+			min-width: 32px;
+		}
+	}
+
+	&-controls {
+		@include flex-center;
+		gap: space(sm);
+
+		.drag-handle {
+			cursor: grab;
+			color: color(text-secondary);
+			padding: space(xs);
+
+			&:hover {
+				color: color(primary);
+			}
+		}
+	}
+}
+
+// Planet-specific elements
+.planet-number {
+	@include flex-center;
+	@include touch-target(32px);
+	background-color: color(primary);
+	color: white;
+	border-radius: radius(full);
+	font-weight: font-weight(semibold);
+	font-size: font-size(sm);
+	min-width: 32px;
+	flex-shrink: 0;
+	margin-right: space(md);
+}
+
+.planet-info {
+	@include flex-column;
+	gap: space(xs);
+	flex: 1;
+}
+
+.planet-name {
+	font-weight: font-weight(medium);
+	color: color(text-primary);
+	font-size: font-size(base);
+
+	@include mobile {
+		font-size: font-size(sm);
+	}
+}
+
+.planet-actions {
+	@include flex-center;
+	gap: space(sm);
+}
+
+.planet-final {
+	background-color: #fef3c7;
+	border-color: #f59e0b;
+	cursor: default;
+
+	&:hover {
+		border-color: #f59e0b;
+		box-shadow: none;
+	}
+
+	.planet-number {
+		background-color: #f59e0b;
+		color: white;
+	}
+}
+
+// Portal Entry Order section
+.portal-order {
+	margin-top: space(3xl);
+	padding: space(2xl);
+	border: 1px solid color(border);
+	border-radius: radius(base);
+	background-color: color(surface);
+
+	h4 {
+		margin: 0 0 space(lg) 0;
+		color: color(text-primary);
+		font-size: font-size(base);
+	}
+
+	&-list {
+		@include flex-column;
+		gap: space(sm);
+	}
+
+	&-item {
+		@include flex-between;
+		padding: space(md) space(lg);
+		background-color: color(background);
+		border: 1px solid color(border);
+		border-radius: radius(base);
+		transition: transition(base);
+
+		&--assigned {
+			border-color: color(success);
+			background-color: #f0fdf4;
+		}
+	}
+}
+
+.portal-step {
+	@include flex-center;
+	@include touch-target(32px);
+	background-color: color(primary);
+	color: white;
+	border-radius: radius(full);
+	font-weight: font-weight(semibold);
+	font-size: font-size(sm);
+	min-width: 32px;
+	flex-shrink: 0;
+}
+
+.portal-catalyst {
+	font-weight: font-weight(semibold);
+	font-size: font-size(base);
+	color: color(text-primary);
+	flex: 1;
+	text-align: left;
+	padding-left: space(md);
+
+	@include mobile {
+		font-size: font-size(sm);
+	}
+}
+
+.portal-location {
+	font-size: font-size(sm);
+	color: color(text-secondary);
+	text-align: right;
+	font-weight: font-weight(medium);
+
+	@include mobile {
+		font-size: font-size(xs);
+	}
+}
+
+// Clear button for planets
+.clear-btn {
+	margin-top: space(lg);
+	background-color: color(danger);
+	color: white;
+	border: none;
+
+	&:hover {
+		background-color: #b91c1c;
+	}
+}
+
+// Helper section
+.clock-helper {
+	margin-top: space(3xl);
+	padding: space(2xl);
+	border: 1px solid color(border);
+	border-radius: radius(base);
+	background-color: color(surface);
+
+	h4 {
+		margin: 0 0 space(lg) 0;
+		color: color(text-primary);
+		font-size: font-size(base);
+	}
+
+	.helper-description {
+		margin-bottom: space(2xl);
+		color: color(text-secondary);
+		font-size: font-size(sm);
+	}
+}
+
+.helper-locations {
+	@include flex-column;
+	gap: space(2xl);
+}
+
+.helper-location {
+	h5 {
+		margin: 0 0 space(lg) 0;
+		color: color(text-primary);
+		font-size: font-size(sm);
+		font-weight: font-weight(semibold);
+	}
+}
+
+.helper-levers {
+	display: flex;
+	gap: space(md);
+	flex-wrap: wrap;
+	align-items: flex-start;
+
+	&--two {
+		flex-direction: row;
+		gap: space(lg);
+	}
+}
+
+.helper-lever-pair {
+	@include flex-column;
+	align-items: center;
+	gap: space(sm);
+
+	.lever-position {
+		font-weight: font-weight(medium);
+		color: color(text-primary);
+		font-size: font-size(sm);
+		text-align: center;
+	}
+}
+
+.helper-lever {
+	@include flex-column;
+	align-items: center;
+	gap: space(sm);
+	padding: space(md);
+	border: 1px solid color(border);
+	border-radius: radius(base);
+	background-color: color(surface);
+	min-width: 60px;
+
+	&--available {
+		border-color: color(success);
+		background-color: #f0fdf4;
+
+		.helper-data {
+			color: color(success);
+		}
+	}
+
+	&--missing {
+		opacity: 0.5;
+		border-style: dashed;
+
+		.helper-data {
+			color: color(text-secondary);
+		}
+	}
+
+	.helper-symbol {
+		@include flex-center;
+	}
+
+	.helper-data {
+		font-weight: font-weight(semibold);
+		font-size: font-size(lg);
+		color: color(text-primary);
+		text-align: center;
+	}
+}
+
+// Clock preferences
+.clock-preferences {
+	margin-top: space(3xl);
+	padding: space(2xl);
+	border: 1px solid color(border);
+	border-radius: radius(base);
+	background-color: color(surface);
+
+	h4 {
+		margin: 0 0 space(lg) 0;
+		color: color(text-primary);
+		font-size: font-size(base);
+	}
+}

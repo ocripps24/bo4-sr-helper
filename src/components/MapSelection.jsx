@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "./MapSelection.css";
+import "../styles/main.scss";
 
 const maps = [
 	{

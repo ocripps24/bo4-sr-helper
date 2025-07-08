@@ -1,0 +1,215 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as *;
+@use "../abstracts/mixins" as *;
+
+// Form components
+.input-group {
+	@include flex-column;
+	gap: space(sm);
+}
+
+.time-input {
+	@include input-base;
+
+	&--small {
+		width: 80px;
+		text-align: center;
+	}
+}
+
+.time-label,
+.symbol-label,
+.movement-label {
+	font-size: font-size(sm);
+	font-weight: font-weight(medium);
+	color: color(text-primary);
+
+	@include mobile {
+		display: none;
+	}
+}
+
+// Symbol picker
+.symbol-picker {
+	@include grid(4, space(sm));
+	max-width: 240px;
+}
+
+// Movement controls
+.movement-inputs {
+	@include flex-column;
+	gap: space(lg);
+}
+
+.movement-slider {
+	@include flex-column;
+	gap: space(sm);
+
+	.slider-container {
+		@include flex-between;
+		gap: space(sm);
+		align-items: center;
+	}
+
+	.slider-limit {
+		font-size: font-size(sm);
+		color: color(text-secondary);
+		font-weight: font-weight(medium);
+		min-width: 24px;
+		text-align: center;
+	}
+
+	.movement-display {
+		font-weight: font-weight(semibold);
+		font-size: font-size(base);
+		color: color(text-primary);
+		text-align: center;
+		min-height: 24px;
+	}
+}
+
+.movement-range {
+	flex: 1;
+	height: 8px;
+	border-radius: radius(full);
+	background: color(border);
+	outline: none;
+	cursor: pointer;
+	transition: transition(base);
+
+	&::-webkit-slider-thumb {
+		appearance: none;
+		width: 20px;
+		height: 20px;
+		border-radius: radius(full);
+		background: color(primary);
+		cursor: pointer;
+		border: 2px solid color(background);
+		box-shadow: shadow(sm);
+		transition: transition(base);
+
+		&:hover {
+			transform: scale(1.1);
+			box-shadow: shadow(md);
+		}
+	}
+
+	&::-moz-range-thumb {
+		width: 20px;
+		height: 20px;
+		border-radius: radius(full);
+		background: color(primary);
+		cursor: pointer;
+		border: 2px solid color(background);
+		box-shadow: shadow(sm);
+		transition: transition(base);
+	}
+
+	&::-webkit-slider-track {
+		height: 8px;
+		border-radius: radius(full);
+		background: color(border);
+	}
+
+	&::-moz-range-track {
+		height: 8px;
+		border-radius: radius(full);
+		background: color(border);
+		border: none;
+	}
+
+	@include mobile {
+		height: 12px;
+
+		&::-webkit-slider-thumb {
+			width: 24px;
+			height: 24px;
+		}
+
+		&::-moz-range-thumb {
+			width: 24px;
+			height: 24px;
+		}
+	}
+}
+
+// Movement stepper
+.movement-stepper {
+	@include flex-column;
+	gap: space(sm);
+
+	.stepper-container {
+		@include flex-center;
+		gap: space(sm);
+	}
+
+	.stepper-display {
+		@include flex-center;
+		min-width: 80px;
+		padding: space(sm);
+		border: 1px solid color(border);
+		border-radius: radius(base);
+		background-color: color(surface);
+		font-weight: font-weight(medium);
+		font-size: font-size(base);
+	}
+
+	.stepper-time {
+		font-size: font-size(sm);
+		color: color(text-secondary);
+		text-align: center;
+	}
+}
+
+// Movement buttons
+.movement-buttons {
+	@include flex-column;
+	gap: space(lg);
+
+	&-section {
+		@include flex-column;
+		gap: space(sm);
+	}
+
+	&-header {
+		@include flex-between;
+		align-items: center;
+		margin-bottom: space(sm);
+	}
+
+	&-grid {
+		display: flex;
+		gap: space(xs);
+		flex-wrap: wrap;
+
+		@include mobile {
+			justify-content: center;
+		}
+	}
+}
+
+// Preference controls
+.preference-controls {
+	display: flex;
+	gap: space(3xl);
+	flex-wrap: wrap;
+}
+
+.preference-group {
+	@include flex-column;
+	gap: space(sm);
+	min-width: 200px;
+
+	label {
+		font-size: font-size(sm);
+		font-weight: font-weight(medium);
+		color: color(text-primary);
+	}
+}
+
+.preference-select {
+	@include input-base;
+	padding: space(sm);
+	font-size: font-size(sm);
+	cursor: pointer;
+}

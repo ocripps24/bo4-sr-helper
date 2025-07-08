@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import "./ClockSection.css";
+import "../../styles/main.scss";
 
 const PLANETS = [
 	"Mercury",

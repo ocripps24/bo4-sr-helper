@@ -1,7 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import MapSelection from "./components/MapSelection";
 import VoyageOfDespair from "./components/VoyageOfDespair";
-import "./App.css";
+import "./styles/main.scss";
 
 function App() {
 	const location = useLocation();

@@ -9,7 +9,7 @@ import {
 import ClockSection from "./voyage/ClockSection";
 import OutletSection from "./voyage/OutletSection";
 import PlanetSection from "./voyage/PlanetSection";
-import "./VoyageOfDespair.css";
+import "../styles/main.scss";
 
 const STEPS = [
 	{
@@ -122,7 +122,7 @@ function VoyageOfDespair() {
 					</button>
 				</div>
 
-				{/* Step Navigation */}
+				{/* Step Navigation - Only tabs now */}
 				<div className="step-navigation">
 					<div className="step-tabs">
 						{STEPS.map((step, index) => (
@@ -137,23 +137,6 @@ function VoyageOfDespair() {
 								<span className="step-name">{step.name}</span>
 							</button>
 						))}
-					</div>
-
-					<div className="step-controls">
-						<button
-							onClick={goToPrevious}
-							disabled={activeStepIndex === 0}
-							className="btn btn-secondary"
-						>
-							← Previous
-						</button>
-						<button
-							onClick={goToNext}
-							disabled={activeStepIndex === STEPS.length - 1}
-							className="btn btn-primary"
-						>
-							Next →
-						</button>
 					</div>
 				</div>
 			</div>
@@ -186,6 +169,24 @@ function VoyageOfDespair() {
 						);
 					})}
 				</Routes>
+			</div>
+
+			{/* Step Controls - Now at bottom of page */}
+			<div className="step-controls">
+				<button
+					onClick={goToPrevious}
+					disabled={activeStepIndex === 0}
+					className="btn btn-secondary"
+				>
+					← Previous
+				</button>
+				<button
+					onClick={goToNext}
+					disabled={activeStepIndex === STEPS.length - 1}
+					className="btn btn-primary"
+				>
+					Next →
+				</button>
 			</div>
 		</div>
 	);

@@ -1,0 +1,330 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as *;
+@use "../abstracts/mixins" as *;
+
+// Spacing utilities
+@each $name, $value in $spacing {
+	// Margin utilities
+	.m-#{$name} {
+		margin: $value;
+	}
+	.mt-#{$name} {
+		margin-top: $value;
+	}
+	.mr-#{$name} {
+		margin-right: $value;
+	}
+	.mb-#{$name} {
+		margin-bottom: $value;
+	}
+	.ml-#{$name} {
+		margin-left: $value;
+	}
+	.mx-#{$name} {
+		margin-left: $value;
+		margin-right: $value;
+	}
+	.my-#{$name} {
+		margin-top: $value;
+		margin-bottom: $value;
+	}
+
+	// Padding utilities
+	.p-#{$name} {
+		padding: $value;
+	}
+	.pt-#{$name} {
+		padding-top: $value;
+	}
+	.pr-#{$name} {
+		padding-right: $value;
+	}
+	.pb-#{$name} {
+		padding-bottom: $value;
+	}
+	.pl-#{$name} {
+		padding-left: $value;
+	}
+	.px-#{$name} {
+		padding-left: $value;
+		padding-right: $value;
+	}
+	.py-#{$name} {
+		padding-top: $value;
+		padding-bottom: $value;
+	}
+}
+
+// Margin auto utilities
+.m-auto {
+	margin: auto;
+}
+.mx-auto {
+	margin-left: auto;
+	margin-right: auto;
+}
+.my-auto {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+.mt-auto {
+	margin-top: auto;
+}
+.mr-auto {
+	margin-right: auto;
+}
+.mb-auto {
+	margin-bottom: auto;
+}
+.ml-auto {
+	margin-left: auto;
+}
+
+// Grid utilities
+.grid-1 {
+	@include grid(1);
+}
+.grid-2 {
+	@include grid(2);
+}
+.grid-3 {
+	@include grid(3);
+}
+.grid-4 {
+	@include grid(4);
+}
+
+@include mobile {
+	.grid-2,
+	.grid-3,
+	.grid-4 {
+		grid-template-columns: 1fr;
+	}
+}
+
+// Responsive grid utilities
+.responsive-grid-2 {
+	@include responsive-grid(1, 2, 2);
+}
+.responsive-grid-3 {
+	@include responsive-grid(1, 2, 3);
+}
+.responsive-grid-4 {
+	@include responsive-grid(1, 2, 4);
+}
+
+// Flex utilities
+.flex {
+	display: flex;
+}
+.flex-column {
+	@include flex-column;
+}
+.flex-center {
+	@include flex-center;
+}
+.flex-between {
+	@include flex-between;
+}
+.flex-start {
+	display: flex;
+	align-items: flex-start;
+}
+.flex-end {
+	display: flex;
+	align-items: flex-end;
+}
+.justify-center {
+	justify-content: center;
+}
+.justify-between {
+	justify-content: space-between;
+}
+.justify-start {
+	justify-content: flex-start;
+}
+.justify-end {
+	justify-content: flex-end;
+}
+.items-center {
+	align-items: center;
+}
+.items-start {
+	align-items: flex-start;
+}
+.items-end {
+	align-items: flex-end;
+}
+.flex-wrap {
+	flex-wrap: wrap;
+}
+.flex-nowrap {
+	flex-wrap: nowrap;
+}
+.flex-1 {
+	flex: 1;
+}
+
+// Display utilities
+.hidden {
+	display: none;
+}
+.block {
+	display: block;
+}
+.inline {
+	display: inline;
+}
+.inline-block {
+	display: inline-block;
+}
+
+// Position utilities
+.relative {
+	position: relative;
+}
+.absolute {
+	position: absolute;
+}
+.fixed {
+	position: fixed;
+}
+.sticky {
+	position: sticky;
+}
+
+// Size utilities
+.w-full {
+	width: 100%;
+}
+.h-full {
+	height: 100%;
+}
+.w-auto {
+	width: auto;
+}
+.h-auto {
+	height: auto;
+}
+
+// Overflow utilities
+.overflow-hidden {
+	overflow: hidden;
+}
+.overflow-auto {
+	overflow: auto;
+}
+.overflow-scroll {
+	overflow: scroll;
+}
+
+// Border utilities
+.border {
+	border: 1px solid color(border);
+}
+.border-t {
+	border-top: 1px solid color(border);
+}
+.border-r {
+	border-right: 1px solid color(border);
+}
+.border-b {
+	border-bottom: 1px solid color(border);
+}
+.border-l {
+	border-left: 1px solid color(border);
+}
+.border-none {
+	border: none;
+}
+
+// Border radius utilities
+@each $name, $value in $radius {
+	.rounded-#{$name} {
+		border-radius: $value;
+	}
+}
+
+// Shadow utilities
+@each $name, $value in $shadows {
+	.shadow-#{$name} {
+		box-shadow: $value;
+	}
+}
+
+// Background utilities
+.bg-transparent {
+	background-color: transparent;
+}
+.bg-primary {
+	background-color: color(primary);
+}
+.bg-secondary {
+	background-color: color(secondary);
+}
+.bg-success {
+	background-color: color(success);
+}
+.bg-warning {
+	background-color: color(warning);
+}
+.bg-danger {
+	background-color: color(danger);
+}
+.bg-background {
+	background-color: color(background);
+}
+.bg-surface {
+	background-color: color(surface);
+}
+
+// Screen reader only
+.sr-only {
+	@include sr-only;
+}
+
+// Responsive utilities
+@include mobile {
+	.mobile\:hidden {
+		display: none;
+	}
+	.mobile\:block {
+		display: block;
+	}
+	.mobile\:flex {
+		display: flex;
+	}
+	.mobile\:grid {
+		display: grid;
+	}
+}
+
+@include tablet-up {
+	.tablet\:hidden {
+		display: none;
+	}
+	.tablet\:block {
+		display: block;
+	}
+	.tablet\:flex {
+		display: flex;
+	}
+	.tablet\:grid {
+		display: grid;
+	}
+}
+
+@include desktop-up {
+	.desktop\:hidden {
+		display: none;
+	}
+	.desktop\:block {
+		display: block;
+	}
+	.desktop\:flex {
+		display: flex;
+	}
+	.desktop\:grid {
+		display: grid;
+	}
+}

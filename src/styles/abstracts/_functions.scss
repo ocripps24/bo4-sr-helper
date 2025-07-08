@@ -1,0 +1,69 @@
+@use "sass:map";
+@use "variables" as *;
+
+// Helper function to get values from maps
+@function get($map, $key) {
+	@if map.has-key($map, $key) {
+		@return map.get($map, $key);
+	}
+	@warn "Key '#{$key}' not found in map.";
+	@return null;
+}
+
+// Color functions
+@function color($name) {
+	@return get($colors, $name);
+}
+
+// Spacing functions
+@function space($size) {
+	@return get($spacing, $size);
+}
+
+// Font size functions
+@function font-size($size) {
+	@return get($font-sizes, $size);
+}
+
+// Font weight functions
+@function font-weight($weight) {
+	@return get($font-weights, $weight);
+}
+
+// Shadow functions
+@function shadow($size) {
+	@return get($shadows, $size);
+}
+
+// Border radius functions
+@function radius($size) {
+	@return get($radius, $size);
+}
+
+// Transition functions
+@function transition($speed) {
+	@return get($transitions, $speed);
+}
+
+// Z-index functions
+@function z($layer) {
+	@return get($z-indexes, $layer);
+}
+
+// Breakpoint functions
+@function breakpoint($size) {
+	@return get($breakpoints, $size);
+}
+
+// Convert px to rem
+@function rem($pixels, $base: 16px) {
+	@return ($pixels / $base) * 1rem;
+}
+
+// Strip unit from number
+@function strip-unit($number) {
+	@if type-of($number) == "number" and not unitless($number) {
+		@return $number / ($number * 0 + 1);
+	}
+	@return $number;
+}

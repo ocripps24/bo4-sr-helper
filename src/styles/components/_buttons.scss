@@ -1,0 +1,207 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as *;
+@use "../abstracts/mixins" as *;
+
+// Button components
+.btn {
+	@include button-base;
+
+	// Button variants
+	&-primary {
+		@include button-primary;
+	}
+
+	&-secondary {
+		@include button-secondary;
+	}
+
+	// Button sizes
+	&-sm {
+		padding: space(sm) space(lg);
+		font-size: font-size(sm);
+		min-height: 36px;
+	}
+
+	&-lg {
+		padding: space(lg) space(2xl);
+		font-size: font-size(lg);
+		min-height: 52px;
+	}
+
+	// Button states
+	&:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.5);
+	}
+}
+
+// Symbol buttons (for clock symbols)
+.symbol-btn {
+	@include touch-target(52px);
+	@include flex-center;
+	border: 2px solid color(border);
+	border-radius: radius(base);
+	background-color: color(background);
+	color: color(text-secondary);
+	cursor: pointer;
+	transition: transition(base);
+	padding: space(sm);
+
+	&:hover:not(:disabled):not(.symbol-btn--faded) {
+		border-color: color(primary);
+		color: color(primary);
+		background-color: color(surface);
+	}
+
+	&--selected {
+		border-color: color(primary);
+		border-width: 3px;
+		background-color: transparent;
+		color: color(primary);
+	}
+
+	&--disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+		border-color: color(border);
+		color: color(text-secondary);
+	}
+
+	&--faded {
+		opacity: 0.25;
+		filter: grayscale(70%);
+		pointer-events: none;
+	}
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+	}
+}
+
+// Catalyst buttons
+.catalyst-btn {
+	@include button-base;
+	@include touch-target;
+	background-color: color(background);
+	color: color(text-primary);
+	border: 1px solid color(border);
+	font-size: font-size(sm);
+	font-weight: font-weight(medium);
+
+	&:hover:not(:disabled) {
+		border-color: color(primary);
+		color: color(primary);
+		background-color: color(surface);
+	}
+
+	&--selected {
+		border-color: color(primary);
+		background-color: color(primary);
+		color: white;
+		font-weight: font-weight(semibold);
+	}
+
+	// Mobile catalyst button content
+	&__full {
+		@include mobile {
+			display: none;
+		}
+	}
+
+	&__short {
+		display: none;
+
+		@include mobile {
+			display: block;
+		}
+	}
+
+	@include mobile {
+		padding: space(sm) space(xs);
+		gap: space(xs);
+		font-size: font-size(xs);
+		min-height: 40px;
+	}
+}
+
+// Movement buttons
+.movement-btn {
+	@include button-base;
+	padding: space(md) space(lg);
+	border: 1px solid color(border);
+	background-color: color(background);
+	color: color(text-primary);
+	font-size: font-size(sm);
+	font-weight: font-weight(medium);
+	min-width: 50px;
+	text-align: center;
+
+	&:hover:not(.movement-btn--selected) {
+		border-color: color(primary);
+		color: color(primary);
+		background-color: color(surface);
+	}
+
+	&--selected {
+		border-color: color(primary);
+		background-color: color(primary);
+		color: white;
+		font-weight: font-weight(semibold);
+	}
+
+	@include mobile {
+		min-width: 45px;
+		padding: space(sm) space(md);
+		font-size: font-size(xs);
+	}
+}
+
+// Switch button for mobile navigation
+.switch-btn {
+	padding: space(sm) space(md);
+	border: 1px solid color(border);
+	border-radius: radius(base);
+	background-color: color(surface);
+	color: color(text-primary);
+	cursor: pointer;
+	transition: transition(base);
+	font-size: font-size(sm);
+	font-weight: font-weight(medium);
+
+	&:hover {
+		border-color: color(primary);
+		color: color(primary);
+		background-color: color(background);
+	}
+
+	@include mobile {
+		font-size: font-size(xs);
+		padding: space(xs) space(sm);
+	}
+}
+
+// Stepper buttons
+.stepper-btn {
+	@include flex-center;
+	@include touch-target(32px);
+	border: 1px solid color(border);
+	border-radius: radius(base);
+	background-color: color(background);
+	color: color(text-primary);
+	cursor: pointer;
+	transition: transition(base);
+	font-weight: font-weight(medium);
+	font-size: font-size(lg);
+
+	&:hover:not(:disabled) {
+		border-color: color(primary);
+		color: color(primary);
+		background-color: color(surface);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+}

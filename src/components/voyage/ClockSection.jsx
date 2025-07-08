@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import "./ClockSection.css";
+import "../../styles/main.scss";
 import { SYMBOL_ICONS, SYMBOL_NAMES } from "./SymbolIcons";
 
 const CLOCK_LOCATIONS = [
@@ -81,10 +81,7 @@ function ClockSection({ data, onChange }) {
 	// UI preference states
 	const [displayFormat, setDisplayFormat] = useState("time"); // 'time' or 'movements'
 	const [inputMethod, setInputMethod] = useState(() => {
-		// Default to buttons for screens under 1200px
-		if (typeof window !== "undefined" && window.innerWidth < 1200) {
-			return "buttons";
-		}
+		// Default to sliders for all devices - they work great on mobile with touch
 		return "sliders";
 	}); // 'sliders', 'steppers', 'text', 'buttons'
 
@@ -612,16 +609,25 @@ function ClockSection({ data, onChange }) {
 											return (
 												<button
 													key={symbol}
-													onClick={() =>
-														handleSymbolChange(location.id, symbol)
-													}
+													onClick={() => {
+														// If clicking the currently selected symbol, deselect it
+														if (isSymbolSelected) {
+															handleSymbolChange(location.id, "");
+														} else {
+															handleSymbolChange(location.id, symbol);
+														}
+													}}
 													className={`symbol-btn ${
 														isSymbolSelected ? "symbol-btn--selected" : ""
 													} ${isDisabled ? "symbol-btn--disabled" : ""} ${
 														shouldFade && !isDisabled ? "symbol-btn--faded" : ""
 													}`}
 													disabled={isDisabled}
-													title={SYMBOL_NAMES[symbol]}
+													title={
+														isSymbolSelected
+															? `Deselect ${SYMBOL_NAMES[symbol]}`
+															: SYMBOL_NAMES[symbol]
+													}
 													type="button"
 												>
 													<IconComponent size={32} />

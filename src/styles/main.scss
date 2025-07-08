@@ -1,0 +1,44 @@
+// Main SCSS entry point
+// Using modern @use syntax instead of deprecated @import
+
+// 1. Abstracts - variables, functions, mixins (no CSS output)
+@use "abstracts/variables" as *;
+@use "abstracts/functions" as *;
+@use "abstracts/mixins" as *;
+
+// 2. Base - reset, typography, utilities
+@use "base/reset";
+@use "base/typography";
+@use "base/utilities";
+
+// 3. Components - reusable UI components
+@use "components/buttons";
+@use "components/forms";
+
+// 4. Layout - layout-specific styles
+@use "layout/app";
+
+// 5. Pages - page-specific styles
+@use "pages/clocks";
+@use "pages/voyage";
+@use "pages/map-selection";
+
+// Legacy CSS custom properties for fallback
+:root {
+	--primary-color: #{color(primary)};
+	--primary-hover: #{color(primary-hover)};
+	--secondary-color: #{color(secondary)};
+	--success-color: #{color(success)};
+	--warning-color: #{color(warning)};
+	--danger-color: #{color(danger)};
+	--background: #{color(background)};
+	--surface: #{color(surface)};
+	--text-primary: #{color(text-primary)};
+	--text-secondary: #{color(text-secondary)};
+	--border: #{color(border)};
+	--border-focus: #{color(border-focus)};
+	--shadow: #{shadow(base)};
+	--shadow-lg: #{shadow(lg)};
+	--radius: #{radius(base)};
+	--transition: #{transition(base)};
+}
