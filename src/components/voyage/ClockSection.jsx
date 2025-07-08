@@ -69,6 +69,8 @@ const getInitialData = () => {
 			symbol: "",
 			hourMovement: 0,
 			minuteMovement: 0,
+			hourError: false,
+			minuteError: false,
 		};
 	});
 	return initialData;
@@ -115,6 +117,8 @@ function ClockSection({ data, onChange }) {
 											: clockData.symbol || "",
 									hourMovement: timeToMovement(hour, "hour"),
 									minuteMovement: timeToMovement(minute, "minute"),
+									hourError: clockData.hourError || false,
+									minuteError: clockData.minuteError || false,
 								};
 							} else {
 								// Already in new format or empty
@@ -135,6 +139,8 @@ function ClockSection({ data, onChange }) {
 										clockData.minuteMovement !== undefined
 											? clockData.minuteMovement
 											: timeToMovement(minute, "minute"),
+									hourError: clockData.hourError || false,
+									minuteError: clockData.minuteError || false,
 								};
 							}
 						} else {
@@ -144,6 +150,8 @@ function ClockSection({ data, onChange }) {
 								symbol: "",
 								hourMovement: 0,
 								minuteMovement: 0,
+								hourError: false,
+								minuteError: false,
 							};
 						}
 					});
@@ -173,14 +181,49 @@ function ClockSection({ data, onChange }) {
 		}
 	}, [localData]); // Removed onChange from dependencies to prevent infinite loop
 
+	// Validation functions
+	const isMovementValid = (movement, symbol) => {
+		if (!symbol) return true; // No symbol selected, no validation needed
+		const limits = MOVEMENT_LIMITS[symbol];
+		return movement >= limits.min && movement <= limits.max;
+	};
+
+	const isTimeValueValid = (timeValue, type, symbol) => {
+		if (!timeValue || timeValue === "" || !symbol) return true;
+		const movement = timeToMovement(timeValue, type);
+		return isMovementValid(movement, symbol);
+	};
+
+	const validateClockData = (clockData) => {
+		const symbol = clockData.symbol;
+		const hourError =
+			clockData.hour !== "" &&
+			!isTimeValueValid(clockData.hour, "hour", symbol);
+		const minuteError =
+			clockData.minute !== "" &&
+			!isTimeValueValid(clockData.minute, "minute", symbol);
+
+		return { hourError, minuteError };
+	};
+
 	const handleHourChange = (locationId, hour) => {
 		// Allow only numbers and limit to reasonable hour values
 		if (hour === "" || (/^\d{1,2}$/.test(hour) && parseInt(hour) <= 12)) {
 			const hourMovement = timeToMovement(hour, "hour");
-			setLocalData((prev) => ({
-				...prev,
-				[locationId]: { ...prev[locationId], hour, hourMovement },
-			}));
+			setLocalData((prev) => {
+				const currentData = prev[locationId] || {};
+				const newData = { ...currentData, hour, hourMovement };
+				const { hourError, minuteError } = validateClockData(newData);
+
+				return {
+					...prev,
+					[locationId]: {
+						...newData,
+						hourError,
+						minuteError: currentData.minuteError, // Keep existing minute error state
+					},
+				};
+			});
 		}
 	};
 
@@ -188,10 +231,20 @@ function ClockSection({ data, onChange }) {
 		// Allow only numbers and limit to 0-59
 		if (minute === "" || (/^\d{1,2}$/.test(minute) && parseInt(minute) <= 59)) {
 			const minuteMovement = timeToMovement(minute, "minute");
-			setLocalData((prev) => ({
-				...prev,
-				[locationId]: { ...prev[locationId], minute, minuteMovement },
-			}));
+			setLocalData((prev) => {
+				const currentData = prev[locationId] || {};
+				const newData = { ...currentData, minute, minuteMovement };
+				const { hourError, minuteError } = validateClockData(newData);
+
+				return {
+					...prev,
+					[locationId]: {
+						...newData,
+						hourError: currentData.hourError, // Keep existing hour error state
+						minuteError,
+					},
+				};
+			});
 		}
 	};
 
@@ -249,10 +302,16 @@ function ClockSection({ data, onChange }) {
 	};
 
 	const handleSymbolChange = (locationId, symbol) => {
-		setLocalData((prev) => ({
-			...prev,
-			[locationId]: { ...prev[locationId], symbol },
-		}));
+		setLocalData((prev) => {
+			const currentData = prev[locationId] || {};
+			const newData = { ...currentData, symbol };
+			const { hourError, minuteError } = validateClockData(newData);
+
+			return {
+				...prev,
+				[locationId]: { ...newData, hourError, minuteError },
+			};
+		});
 	};
 
 	const getUsedSymbols = () => {
@@ -588,6 +647,49 @@ function ClockSection({ data, onChange }) {
 						>
 							<div className="clock-location-header">
 								<h4>{location.name}</h4>
+
+								{/* Symbol picker in header - mobile only */}
+								<div className="symbol-picker symbol-picker--header">
+									{SYMBOLS.map((symbol) => {
+										const IconComponent = SYMBOL_ICONS[symbol];
+										const isSymbolSelected = clockData.symbol === symbol;
+										const isDisabled = !availableSymbols.includes(symbol);
+										const usedSymbols = getUsedSymbols();
+										const isSymbolUsedElsewhere =
+											usedSymbols.includes(symbol) && !isSymbolSelected;
+										const shouldFade =
+											isSymbolUsedElsewhere ||
+											(clockData.symbol && clockData.symbol !== symbol);
+
+										return (
+											<button
+												key={symbol}
+												onClick={() => {
+													// If clicking the currently selected symbol, deselect it
+													if (isSymbolSelected) {
+														handleSymbolChange(location.id, "");
+													} else {
+														handleSymbolChange(location.id, symbol);
+													}
+												}}
+												className={`symbol-btn ${
+													isSymbolSelected ? "symbol-btn--selected" : ""
+												} ${isDisabled ? "symbol-btn--disabled" : ""} ${
+													shouldFade && !isDisabled ? "symbol-btn--faded" : ""
+												}`}
+												disabled={isDisabled}
+												title={
+													isSymbolSelected
+														? `Deselect ${SYMBOL_NAMES[symbol]}`
+														: SYMBOL_NAMES[symbol]
+												}
+												type="button"
+											>
+												<IconComponent size={32} />
+											</button>
+										);
+									})}
+								</div>
 							</div>
 
 							<div className="clock-inputs">
@@ -650,12 +752,15 @@ function ClockSection({ data, onChange }) {
 											<input
 												id={`hour-${location.id}`}
 												type="text"
+												inputMode="numeric"
 												value={displayHour}
 												onChange={(e) =>
 													handleHourChange(location.id, e.target.value)
 												}
 												placeholder="Hour"
-												className="time-input time-input--small"
+												className={`time-input time-input--small ${
+													clockData.hourError ? "time-input--error" : ""
+												}`}
 												maxLength="2"
 											/>
 										</div>
@@ -669,12 +774,15 @@ function ClockSection({ data, onChange }) {
 											<input
 												id={`minute-${location.id}`}
 												type="text"
+												inputMode="numeric"
 												value={displayMinute}
 												onChange={(e) =>
 													handleMinuteChange(location.id, e.target.value)
 												}
 												placeholder="Minute"
-												className="time-input time-input--small"
+												className={`time-input time-input--small ${
+													clockData.minuteError ? "time-input--error" : ""
+												}`}
 												maxLength="2"
 											/>
 										</div>

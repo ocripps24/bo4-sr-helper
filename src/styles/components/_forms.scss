@@ -10,10 +10,30 @@
 
 .time-input {
 	@include input-base;
+	padding: space(sm);
+	font-size: font-size(base);
+	text-align: center;
+
+	@include mobile {
+		padding: space(xs) space(sm); // Reduce vertical padding (~1px less)
+	}
 
 	&--small {
-		width: 80px;
-		text-align: center;
+		max-width: 80px;
+
+		@include mobile {
+			max-width: none; // Remove max-width on mobile for full container width
+		}
+	}
+
+	&--error {
+		background-color: #fef2f2; // Light red background for validation errors
+		border-color: #dc2626; // Red border for errors
+
+		&:focus {
+			border-color: #dc2626;
+			box-shadow: 0 0 0 1px #dc2626;
+		}
 	}
 }
 
@@ -39,16 +59,40 @@
 .movement-inputs {
 	@include flex-column;
 	gap: space(lg);
+
+	@include mobile {
+		// Display hour and minute controls side by side on mobile
+		flex-direction: row;
+		gap: space(md);
+		margin-top: 5px; // Small spacing above sliders on mobile
+
+		.movement-slider,
+		.movement-stepper {
+			flex: 1; // Equal width for both controls
+		}
+
+		.movement-stepper {
+			margin-bottom: 5px; // Small spacing below steppers on mobile
+		}
+	}
 }
 
 .movement-slider {
 	@include flex-column;
 	gap: space(sm);
 
+	@include mobile {
+		gap: space(xs); // Tighter spacing on mobile
+	}
+
 	.slider-container {
 		@include flex-between;
 		gap: space(sm);
 		align-items: center;
+
+		@include mobile {
+			gap: space(xs); // Tighter spacing on mobile
+		}
 	}
 
 	.slider-limit {
@@ -57,6 +101,10 @@
 		font-weight: font-weight(medium);
 		min-width: 24px;
 		text-align: center;
+
+		@include mobile {
+			display: none; // Hide limits on mobile to save space
+		}
 	}
 
 	.movement-display {
@@ -138,9 +186,17 @@
 	@include flex-column;
 	gap: space(sm);
 
+	@include mobile {
+		gap: space(xs); // Tighter spacing on mobile
+	}
+
 	.stepper-container {
 		@include flex-center;
 		gap: space(sm);
+
+		@include mobile {
+			gap: space(xs); // Tighter spacing between buttons and display
+		}
 	}
 
 	.stepper-display {
@@ -152,6 +208,13 @@
 		background-color: color(surface);
 		font-weight: font-weight(medium);
 		font-size: font-size(base);
+
+		@include mobile {
+			// More compact for mobile inline layout
+			min-width: 50px;
+			padding: space(xs);
+			font-size: font-size(sm);
+		}
 	}
 
 	.stepper-time {
@@ -212,4 +275,23 @@
 	padding: space(sm);
 	font-size: font-size(sm);
 	cursor: pointer;
+}
+
+// Time input styling
+.time-inputs {
+	display: flex;
+	gap: space(lg);
+
+	@include mobile {
+		gap: space(md);
+		margin-bottom: 5px; // Small spacing below time inputs on mobile
+
+		.input-group {
+			flex: 1; // Equal width for hour and minute groups
+
+			.time-input {
+				width: 100%; // Fill available container space
+			}
+		}
+	}
 }

@@ -13,8 +13,8 @@
 		.clock-grid,
 		.clock-helper,
 		.clock-preferences {
-			padding-left: space(lg);
-			padding-right: space(lg);
+			// padding-left: space(lg);
+			// padding-right: space(lg);
 		}
 
 		.section-header {
@@ -74,15 +74,18 @@
 
 .clock-location {
 	background-color: color(background);
-	border: 1px solid color(border);
-	border-radius: radius(base);
+	border-bottom: 1px solid color(border);
+	// border-radius: radius(base);
 	padding: space(2xl);
 	transition: transition(base);
+
+	@include mobile {
+		padding: 0; // Smaller padding on mobile
+	}
 
 	&--active {
 		border-color: color(primary);
 		background-color: color(surface);
-		box-shadow: 0 0 0 1px color(primary);
 	}
 
 	&-header {
@@ -91,10 +94,22 @@
 		margin-bottom: space(lg);
 		justify-content: flex-start;
 
+		@include mobile {
+			margin-bottom: space(md);
+			// On mobile, make this a flex container that can hold both title and symbols
+			justify-content: space-between;
+			align-items: center;
+		}
+
 		h4 {
 			margin: 0;
 			color: color(text-primary);
 			font-size: font-size(base);
+
+			@include mobile {
+				font-size: font-size(sm);
+				flex-shrink: 0; // Prevent title from shrinking
+			}
 		}
 	}
 }
@@ -102,6 +117,10 @@
 .clock-inputs {
 	@include flex-column;
 	gap: space(lg);
+
+	@include mobile {
+		gap: space(md);
+	}
 }
 
 .time-inputs {
@@ -538,5 +557,60 @@
 		margin: 0 0 space(lg) 0;
 		color: color(text-primary);
 		font-size: font-size(base);
+	}
+}
+
+// Symbol picker styles for mobile inline layout
+.symbol-picker {
+	display: flex;
+	gap: space(sm);
+	flex-wrap: wrap;
+
+	@include mobile {
+		gap: space(xs);
+		flex-wrap: nowrap; // Keep symbols in a single row on mobile
+		flex-shrink: 1; // Allow symbols to shrink if needed
+	}
+
+	// Header version - only visible on mobile
+	&--header {
+		display: none; // Hidden on desktop
+
+		@include mobile {
+			display: flex; // Show on mobile
+		}
+	}
+
+	// Regular version - hidden on mobile
+	@include mobile {
+		&:not(.symbol-picker--header) {
+			display: none; // Hide regular picker on mobile
+		}
+	}
+}
+
+// Symbol button mobile optimizations
+.symbol-btn {
+	@include mobile {
+		// Better touch targets for mobile header layout
+		min-height: 40px;
+		min-width: 50px;
+		padding: space(xs);
+
+		// Scale down the SVG icons inside
+		svg {
+			width: 18px;
+			height: 18px;
+		}
+	}
+}
+
+// Input group for symbols on mobile
+.input-group {
+	&:has(.symbol-picker) {
+		@include mobile {
+			// This will be moved to the header, so hide in normal position
+			display: none;
+		}
 	}
 }
