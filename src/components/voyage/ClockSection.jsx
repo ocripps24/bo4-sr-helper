@@ -847,15 +847,15 @@ function ClockSection({ data, onChange }) {
 			{/* Helper Section */}
 			{completeClocks.length > 0 && (
 				<div className="clock-helper">
-					<h4>Lever Settings Guide</h4>
+					<h4>Dial Locations & Inputs</h4>
 					<p className="helper-description">
-						Use the collected clock data to set levers in these 3 locations:
+						All symbols match the in-game positioning of their respective dials:
 					</p>
 
 					<div className="helper-locations">
 						{/* Bridge - All symbols, use minutes */}
 						<div className="helper-location">
-							<h5>1. Bridge - 4 Levers (Use Minutes)</h5>
+							<h5>1. Bridge - Minutes</h5>
 							<div className="helper-levers">
 								{[
 									"triangle-up-dash",
@@ -888,7 +888,7 @@ function ClockSection({ data, onChange }) {
 
 						{/* Poop Deck - Dash symbols, use hours */}
 						<div className="helper-location">
-							<h5>2. Poop Deck - 2 Levers (Use Hours)</h5>
+							<h5>2. Poop Deck - Hours</h5>
 							<div className="helper-levers helper-levers--two">
 								<div className="helper-lever-pair">
 									<span className="lever-position">Left:</span>
@@ -933,7 +933,7 @@ function ClockSection({ data, onChange }) {
 
 						{/* Boiler Room - Non-dash symbols, use hours */}
 						<div className="helper-location">
-							<h5>3. Boiler Room - 2 Levers (Use Hours)</h5>
+							<h5>3. Boiler Room - Hours</h5>
 							<div className="helper-levers helper-levers--two">
 								<div className="helper-lever-pair">
 									<span className="lever-position">Left:</span>
