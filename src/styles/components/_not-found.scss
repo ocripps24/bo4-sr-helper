@@ -1,0 +1,93 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as *;
+@use "../abstracts/mixins" as *;
+
+.not-found-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 80vh;
+	text-align: center;
+	padding: space(3xl);
+	background: linear-gradient(
+		135deg,
+		color(primary-light) 0%,
+		color(primary) 100%
+	);
+	border-radius: radius(base);
+	margin: space(xl) 0;
+}
+
+.not-found-content {
+	max-width: 500px;
+	width: 100%;
+	color: white;
+}
+
+.not-found-content .error-code {
+	font-size: 8rem;
+	font-weight: font-weight(black);
+	margin-bottom: space(lg);
+	text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	animation: pulse 2s infinite;
+
+	@include mobile {
+		font-size: 6rem;
+	}
+}
+
+.not-found-content .message {
+	font-size: font-size(2xl);
+	margin-bottom: space(lg);
+	opacity: 0.9;
+	font-weight: font-weight(semibold);
+
+	@include mobile {
+		font-size: font-size(xl);
+	}
+}
+
+.not-found-content .description {
+	font-size: font-size(lg);
+	margin-bottom: space(3xl);
+	opacity: 0.8;
+
+	@include mobile {
+		font-size: font-size(base);
+	}
+}
+
+.not-found-content .home-link {
+	display: inline-block;
+	padding: space(lg) space(2xl);
+	background: rgba(255, 255, 255, 0.1);
+	border: 2px solid rgba(255, 255, 255, 0.3);
+	border-radius: radius(base);
+	color: white;
+	text-decoration: none;
+	font-weight: font-weight(semibold);
+	font-size: font-size(base);
+	transition: transition(base);
+
+	&:hover {
+		background: rgba(255, 255, 255, 0.2);
+		border-color: rgba(255, 255, 255, 0.5);
+		transform: translateY(-2px);
+	}
+
+	&:focus {
+		outline: 2px solid rgba(255, 255, 255, 0.5);
+		outline-offset: 2px;
+	}
+}
+
+@keyframes pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.7;
+	}
+}

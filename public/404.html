@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>404 - BO4 Speedrun Helper</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+					sans-serif;
+				background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+				color: white;
+				height: 100vh;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				padding: 20px;
+			}
+
+			.container {
+				max-width: 500px;
+				width: 100%;
+			}
+
+			.error-code {
+				font-size: 8rem;
+				font-weight: 900;
+				margin-bottom: 1rem;
+				text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+				animation: pulse 2s infinite;
+			}
+
+			.message {
+				font-size: 1.5rem;
+				margin-bottom: 2rem;
+				opacity: 0.9;
+			}
+
+			.redirect-message {
+				font-size: 1.125rem;
+				margin-bottom: 1rem;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 0.5rem;
+			}
+
+			.spinner {
+				width: 20px;
+				height: 20px;
+				border: 2px solid rgba(255, 255, 255, 0.3);
+				border-top: 2px solid white;
+				border-radius: 50%;
+				animation: spin 1s linear infinite;
+			}
+
+			.manual-link {
+				margin-top: 2rem;
+				padding: 1rem 2rem;
+				background: rgba(255, 255, 255, 0.1);
+				border: 2px solid rgba(255, 255, 255, 0.3);
+				border-radius: 8px;
+				color: white;
+				text-decoration: none;
+				font-weight: 600;
+				transition: all 0.3s ease;
+				display: inline-block;
+			}
+
+			.manual-link:hover {
+				background: rgba(255, 255, 255, 0.2);
+				border-color: rgba(255, 255, 255, 0.5);
+				transform: translateY(-2px);
+			}
+
+			@keyframes pulse {
+				0%,
+				100% {
+					opacity: 1;
+				}
+				50% {
+					opacity: 0.7;
+				}
+			}
+
+			@keyframes spin {
+				0% {
+					transform: rotate(0deg);
+				}
+				100% {
+					transform: rotate(360deg);
+				}
+			}
+
+			@media (max-width: 640px) {
+				.error-code {
+					font-size: 6rem;
+				}
+				.message {
+					font-size: 1.25rem;
+				}
+				.redirect-message {
+					font-size: 1rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="error-code">404</div>
+			<div class="message">Page Not Found</div>
+			<div class="redirect-message">
+				<div class="spinner"></div>
+				Redirecting to BO4 Speedrun Helper...
+			</div>
+			<a href="/" class="manual-link">Go to Homepage</a>
+		</div>
+
+		<script>
+			// GitHub Pages SPA redirect
+			// Store the current path and redirect to index.html
+			const path = window.location.pathname.slice(1);
+			const query = window.location.search;
+			const hash = window.location.hash;
+
+			// Show redirect message for at least 1 second for better UX
+			setTimeout(() => {
+				// Redirect to index.html with the path as a query parameter
+				window.location.replace(
+					window.location.origin +
+						"/?redirect=" +
+						encodeURIComponent(path + query + hash)
+				);
+			}, 1000);
+		</script>
+	</body>
+</html>

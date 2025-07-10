@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import MapSelection from "./components/MapSelection";
 import VoyageOfDespair from "./components/VoyageOfDespair";
+import NotFound from "./components/NotFound";
 import "./styles/main.scss";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
 				<Routes>
 					<Route path="/" element={<MapSelection />} />
 					<Route path="/voyage-of-despair/*" element={<VoyageOfDespair />} />
+					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</main>
 		</div>
