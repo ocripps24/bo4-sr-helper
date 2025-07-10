@@ -178,7 +178,30 @@
 
 // Planet section styles
 .planet-grid {
-	@include responsive-grid(1, 2, 3, space(lg));
+	display: grid;
+	gap: space(lg);
+	grid-template-columns: repeat(3, 1fr); // Default: 3 columns
+
+	// When there are exactly 2 planets, use 2 columns
+	.planet-btn:nth-last-child(2):first-child,
+	.planet-btn:nth-last-child(2):first-child ~ .planet-btn {
+		grid-column: span 1;
+	}
+
+	// When there are exactly 2 planets, adjust grid to 2 columns
+	&:has(.planet-btn:nth-last-child(2):first-child) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	// When there is exactly 1 planet, use 1 column (full width)
+	&:has(.planet-btn:only-child) {
+		grid-template-columns: 1fr;
+	}
+
+	@include mobile {
+		// On mobile, always use single column for better touch targets
+		grid-template-columns: 1fr;
+	}
 }
 
 .planet-item {
