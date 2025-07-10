@@ -7,7 +7,7 @@ import "./styles/main.scss";
 ReactDOM.createRoot(document.getElementById("root")).render(
 	<React.StrictMode>
 		<BrowserRouter
-			basename="/bo4-sr-helper"
+			basename="/"
 			future={{
 				v7_startTransition: true,
 				v7_relativeSplatPath: true,
