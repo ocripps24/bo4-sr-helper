@@ -1,3 +1,7 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as *;
+@use "../abstracts/mixins" as *;
+
 .voyage-page {
 	max-width: 1000px;
 	margin: 0 auto;
@@ -97,11 +101,8 @@
 	display: flex;
 	justify-content: space-between;
 	gap: 1rem;
-	padding: 1.5rem;
-	border-top: 1px solid var(--border);
-	background-color: var(--surface);
 	margin-top: 2rem;
-	border-radius: var(--radius);
+	@include card;
 }
 
 .step-controls .btn {

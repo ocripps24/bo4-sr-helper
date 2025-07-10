@@ -558,12 +558,11 @@
 
 	&--four {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+		grid-template-columns: repeat(4, auto);
 		gap: space(md);
+		justify-content: flex-start;
 
 		@include mobile {
-			grid-template-columns: repeat(4, auto);
-			justify-content: flex-start;
 			gap: space(xs);
 		}
 	}
