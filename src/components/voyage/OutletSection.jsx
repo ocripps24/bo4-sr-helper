@@ -11,10 +11,10 @@ const OUTLET_LOCATIONS = [
 ];
 
 const CATALYST_TYPES = [
-	{ id: "electric", name: "Electric", color: "#3b82f6" },
+	{ id: "electric", name: "Electric", color: "#fbbf24" },
 	{ id: "fire", name: "Fire", color: "#ef4444" },
 	{ id: "poison", name: "Poison", color: "#16a34a" },
-	{ id: "water", name: "Water", color: "#06b6d4" },
+	{ id: "water", name: "Water", color: "#3b82f6" },
 ];
 
 const PORTAL_ORDER = [
@@ -170,7 +170,8 @@ function OutletSection({ data, onChange }) {
 													? {
 															backgroundColor: catalyst.color,
 															borderColor: catalyst.color,
-															color: "white",
+															color:
+																catalyst.id === "electric" ? "black" : "white",
 													  }
 													: {}
 											}
@@ -208,18 +209,41 @@ function OutletSection({ data, onChange }) {
 								className={`portal-order-item ${
 									location ? "portal-order-item--assigned" : ""
 								}`}
+								style={
+									location
+										? {
+												backgroundColor: catalyst.color,
+												borderColor: catalyst.color,
+										  }
+										: {}
+								}
 							>
 								<span className="portal-step">{portal.step}</span>
 								<span
+									className="portal-location"
+									style={
+										location
+											? {
+													color: catalyst.id === "electric" ? "black" : "white",
+													fontWeight: "600",
+											  }
+											: {}
+									}
+								>
+									{location || "Not assigned"}
+								</span>
+								<span
 									className="portal-catalyst"
 									style={
-										location ? { color: catalyst.color, fontWeight: "600" } : {}
+										location
+											? {
+													color: catalyst.id === "electric" ? "black" : "white",
+													fontWeight: "600",
+											  }
+											: {}
 									}
 								>
 									{portal.name}
-								</span>
-								<span className="portal-location">
-									{location ? `→ ${location}` : "→ Not assigned"}
 								</span>
 							</div>
 						);

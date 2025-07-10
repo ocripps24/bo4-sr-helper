@@ -1,4 +1,22 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import {
+	DndContext,
+	closestCenter,
+	KeyboardSensor,
+	PointerSensor,
+	TouchSensor,
+	MouseSensor,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
+import {
+	arrayMove,
+	SortableContext,
+	sortableKeyboardCoordinates,
+	verticalListSortingStrategy,
+	useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import "../../styles/main.scss";
 
 const PLANETS = [
@@ -24,10 +42,92 @@ const PLANET_LOCATIONS = {
 	Sun: "Forecastle/Spawn",
 };
 
+// Sortable Planet Item Component
+function SortablePlanetItem({
+	planet,
+	index,
+	displayNumber,
+	isLastSun,
+	isLastPlanet,
+	onRemove,
+}) {
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({ id: planet });
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+	};
+
+	return (
+		<div
+			ref={setNodeRef}
+			style={style}
+			className={`planet-order-item ${isLastSun ? "planet-final" : ""} ${
+				isDragging ? "planet-order-item--dragging" : ""
+			}`}
+			title={isLastSun ? "Sun (Final step)" : "Drag to reorder"}
+		>
+			<span className="planet-number">{displayNumber}</span>
+			<div className="planet-info">
+				<span className="planet-name">
+					{planet} - {PLANET_LOCATIONS[planet]}
+				</span>
+			</div>
+			{!isLastSun && (
+				<div className="planet-actions">
+					<button
+						className="drag-handle"
+						{...attributes}
+						{...listeners}
+						title="Drag to reorder"
+						type="button"
+					>
+						⋮⋮
+					</button>
+					{isLastPlanet && (
+						<button
+							onClick={() => onRemove(index)}
+							className="delete-btn"
+							title="Remove last planet"
+							type="button"
+						>
+							✕
+						</button>
+					)}
+				</div>
+			)}
+		</div>
+	);
+}
+
 function PlanetSection({ data, onChange }) {
 	const [localData, setLocalData] = useState(data);
 	const isInitializing = useRef(true);
-	const [draggedIndex, setDraggedIndex] = useState(null);
+
+	// Configure sensors for @dnd-kit
+	const sensors = useSensors(
+		useSensor(MouseSensor, {
+			activationConstraint: {
+				distance: 5, // Small distance for mouse
+			},
+		}),
+		useSensor(TouchSensor, {
+			activationConstraint: {
+				delay: 250, // 250ms delay for touch
+				tolerance: 5, // 5px tolerance during delay
+			},
+		}),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		})
+	);
 
 	// Load from localStorage on mount or when parent data changes (reset)
 	useEffect(() => {
@@ -67,64 +167,47 @@ function PlanetSection({ data, onChange }) {
 		}
 	}, [localData]); // Removed onChange from dependencies to prevent infinite loop
 
-	const addPlanet = (planet) => {
-		if (!localData.includes(planet)) {
-			setLocalData((prev) => [...prev, planet]);
-		}
-	};
+	const addPlanet = useCallback(
+		(planet) => {
+			if (!localData.includes(planet)) {
+				setLocalData((prev) => [...prev, planet]);
+			}
+		},
+		[localData]
+	);
 
-	const removePlanet = (index) => {
+	const removePlanet = useCallback((index) => {
 		setLocalData((prev) => prev.filter((_, i) => i !== index));
-	};
+	}, []);
 
-	const reorderPlanets = (fromIndex, toIndex) => {
-		setLocalData((prev) => {
-			const newData = [...prev];
-			const planet = newData.splice(fromIndex, 1)[0];
-			newData.splice(toIndex, 0, planet);
-			return newData;
-		});
-	};
+	const handleDragEnd = useCallback((event) => {
+		const { active, over } = event;
 
-	const handleDragStart = (e, index) => {
-		setDraggedIndex(index);
-		e.dataTransfer.effectAllowed = "move";
-	};
+		if (active.id !== over?.id) {
+			setLocalData((items) => {
+				const oldIndex = items.indexOf(active.id);
+				const newIndex = items.indexOf(over.id);
 
-	const handleDragOver = (e) => {
-		e.preventDefault();
-		e.dataTransfer.dropEffect = "move";
-	};
-
-	const handleDrop = (e, dropIndex) => {
-		e.preventDefault();
-		if (draggedIndex !== null && draggedIndex !== dropIndex) {
-			reorderPlanets(draggedIndex, dropIndex);
+				return arrayMove(items, oldIndex, newIndex);
+			});
 		}
-		setDraggedIndex(null);
-	};
+	}, []);
 
-	const handleDragEnd = () => {
-		setDraggedIndex(null);
-	};
-
-	const clearAll = () => {
+	const clearAll = useCallback(() => {
 		setLocalData([]);
-	};
+	}, []);
 
-	const getAvailablePlanets = () => {
+	const availablePlanets = useMemo(() => {
 		return PLANETS.filter((planet) => !localData.includes(planet));
-	};
+	}, [localData]);
 
 	// Get display order with Sun automatically added at the end
-	const getDisplayOrder = () => {
+	const displayOrder = useMemo(() => {
 		const order = [...localData];
 		// Always add Sun at the end (step 9)
 		order.push("Sun");
 		return order;
-	};
-
-	const displayOrder = getDisplayOrder();
+	}, [localData]);
 
 	return (
 		<div className="section-card">
@@ -147,11 +230,11 @@ function PlanetSection({ data, onChange }) {
 			</p>
 
 			{/* Available planets - only show when there are planets available */}
-			{getAvailablePlanets().length > 0 && (
+			{availablePlanets.length > 0 && (
 				<div className="available-planets">
 					<h4>Available Planets:</h4>
 					<div className="planet-grid">
-						{getAvailablePlanets().map((planet) => (
+						{availablePlanets.map((planet) => (
 							<button
 								key={planet}
 								onClick={() => addPlanet(planet)}
@@ -167,47 +250,39 @@ function PlanetSection({ data, onChange }) {
 			{/* Current planet order */}
 			<div className="planet-order">
 				<h4>Current Order:</h4>
-				<div className="planet-order-list">
-					{displayOrder.map((planet, index) => {
-						const isLastSun =
-							planet === "Sun" && index === displayOrder.length - 1;
-						// For Sun, always show 9 regardless of current index
-						const displayNumber = isLastSun ? 9 : index + 1;
-						return (
-							<div
-								key={`${planet}-${index}`}
-								className={`planet-order-item ${
-									isLastSun ? "planet-final" : ""
-								} ${
-									draggedIndex === index ? "planet-order-item--dragging" : ""
-								}`}
-								draggable={!isLastSun}
-								onDragStart={(e) => !isLastSun && handleDragStart(e, index)}
-								onDragOver={handleDragOver}
-								onDrop={(e) => handleDrop(e, index)}
-								onDragEnd={handleDragEnd}
-								onClick={() => !isLastSun && removePlanet(index)}
-								title={
-									isLastSun
-										? "Sun (Final step)"
-										: "Click to remove, drag to reorder"
-								}
-							>
-								<span className="planet-number">{displayNumber}</span>
-								<div className="planet-info">
-									<span className="planet-name">
-										{planet} - {PLANET_LOCATIONS[planet]}
-									</span>
-								</div>
-								{!isLastSun && (
-									<div className="planet-actions">
-										<span className="drag-handle">⋮⋮</span>
-									</div>
-								)}
-							</div>
-						);
-					})}
-				</div>
+				<DndContext
+					sensors={sensors}
+					collisionDetection={closestCenter}
+					onDragEnd={handleDragEnd}
+				>
+					<SortableContext
+						items={localData}
+						strategy={verticalListSortingStrategy}
+					>
+						<div className="planet-order-list">
+							{displayOrder.map((planet, index) => {
+								const isLastSun =
+									planet === "Sun" && index === displayOrder.length - 1;
+								const isLastPlanet =
+									!isLastSun && index === localData.length - 1; // Last user-added planet
+								// For Sun, always show 9 regardless of current index
+								const displayNumber = isLastSun ? 9 : index + 1;
+
+								return (
+									<SortablePlanetItem
+										key={planet}
+										planet={planet}
+										index={index}
+										displayNumber={displayNumber}
+										isLastSun={isLastSun}
+										isLastPlanet={isLastPlanet}
+										onRemove={removePlanet}
+									/>
+								);
+							})}
+						</div>
+					</SortableContext>
+				</DndContext>
 				{localData.length > 0 && (
 					<button onClick={clearAll} className="btn btn-secondary clear-btn">
 						Clear All

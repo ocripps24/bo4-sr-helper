@@ -38,8 +38,7 @@
 }
 
 .time-label,
-.symbol-label,
-.movement-label {
+.symbol-label {
 	font-size: font-size(sm);
 	font-weight: font-weight(medium);
 	color: color(text-primary);
@@ -47,6 +46,12 @@
 	@include mobile {
 		display: none;
 	}
+}
+
+.movement-label {
+	font-size: font-size(sm);
+	font-weight: font-weight(medium);
+	color: color(text-primary);
 }
 
 // Symbol picker
@@ -187,7 +192,10 @@
 	gap: space(sm);
 
 	@include mobile {
-		gap: space(xs); // Tighter spacing on mobile
+		flex-direction: row;
+		align-items: center;
+		gap: space(sm);
+		margin-bottom: space(xs);
 	}
 
 	.stepper-container {
@@ -232,6 +240,13 @@
 	&-section {
 		@include flex-column;
 		gap: space(sm);
+
+		@include mobile {
+			flex-direction: row;
+			align-items: center;
+			gap: space(sm);
+			margin-bottom: space(xs);
+		}
 	}
 
 	&-header {

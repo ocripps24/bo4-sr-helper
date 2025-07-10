@@ -403,9 +403,9 @@ function ClockSection({ data, onChange }) {
 
 		return (
 			<div className="movement-slider">
-				<label className="movement-label">
-					{type === "hour" ? "Hour" : "Minute"} Movement:
-				</label>
+				<span className="movement-label">
+					{type === "hour" ? "Hour" : "Minute"}:
+				</span>
 				<div className="slider-container">
 					<span className="slider-limit">{limits.min}</span>
 					<input
@@ -444,12 +444,27 @@ function ClockSection({ data, onChange }) {
 	}) => {
 		const limits = symbol ? MOVEMENT_LIMITS[symbol] : { min: -5, max: 5 };
 		const timeValue = movementToTime(movement, type);
+		const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+		useEffect(() => {
+			const handleResize = () => {
+				setIsMobile(window.innerWidth < 768);
+			};
+			window.addEventListener("resize", handleResize);
+			return () => window.removeEventListener("resize", handleResize);
+		}, []);
 
 		return (
 			<div className="movement-stepper">
-				<label className="movement-label">
-					{type === "hour" ? "Hour" : "Minute"} Movement:
-				</label>
+				<span className="movement-label">
+					{isMobile
+						? type === "hour"
+							? "H:"
+							: "M:"
+						: type === "hour"
+						? "Hour:"
+						: "Minute:"}
+				</span>
 				<div className="stepper-container">
 					<button
 						onClick={() =>
@@ -492,13 +507,10 @@ function ClockSection({ data, onChange }) {
 	}) => {
 		const limits = symbol ? MOVEMENT_LIMITS[symbol] : { min: -5, max: 5 };
 		const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-		const [showingMinutes, setShowingMinutes] = useState(false);
 
 		useEffect(() => {
 			const handleResize = () => {
-				const mobile = window.innerWidth < 768;
-				setIsMobile(mobile);
-				if (!mobile) setShowingMinutes(false); // Reset to hour view on desktop
+				setIsMobile(window.innerWidth < 768);
 			};
 			window.addEventListener("resize", handleResize);
 			return () => window.removeEventListener("resize", handleResize);
@@ -514,13 +526,7 @@ function ClockSection({ data, onChange }) {
 				buttons.push(
 					<button
 						key={movement}
-						onClick={() => {
-							onChange(locationId, movement, type);
-							// On mobile, after selecting hour, show minute buttons
-							if (isMobile && type === "hour") {
-								setShowingMinutes(true);
-							}
-						}}
+						onClick={() => onChange(locationId, movement, type)}
 						className={`movement-btn ${
 							isSelected ? "movement-btn--selected" : ""
 						}`}
@@ -535,60 +541,17 @@ function ClockSection({ data, onChange }) {
 			return buttons;
 		};
 
-		// Mobile: Show either hour or minute buttons
-		if (isMobile) {
-			if (!showingMinutes) {
-				// Show hour buttons
-				return (
-					<div className="movement-buttons">
-						<div className="movement-buttons-header">
-							<label className="movement-label">Hour:</label>
-							{hourMovement !== 0 && (
-								<button
-									onClick={() => setShowingMinutes(true)}
-									className="switch-btn"
-								>
-									Set Minutes →
-								</button>
-							)}
-						</div>
-						<div className="movement-buttons-grid">
-							{generateButtons(hourMovement || 0, "hour")}
-						</div>
-					</div>
-				);
-			} else {
-				// Show minute buttons
-				return (
-					<div className="movement-buttons">
-						<div className="movement-buttons-header">
-							<button
-								onClick={() => setShowingMinutes(false)}
-								className="switch-btn"
-							>
-								← Back to Hours
-							</button>
-							<label className="movement-label">Minute:</label>
-						</div>
-						<div className="movement-buttons-grid">
-							{generateButtons(minuteMovement || 0, "minute")}
-						</div>
-					</div>
-				);
-			}
-		}
-
-		// Desktop: Show both hour and minute buttons
+		// Both mobile and desktop: Show both hour and minute buttons
 		return (
 			<div className="movement-buttons">
 				<div className="movement-buttons-section">
-					<label className="movement-label">Hour:</label>
+					<span className="movement-label">{isMobile ? "H:" : "Hour:"}</span>
 					<div className="movement-buttons-grid">
 						{generateButtons(hourMovement || 0, "hour")}
 					</div>
 				</div>
 				<div className="movement-buttons-section">
-					<label className="movement-label">Minute:</label>
+					<span className="movement-label">{isMobile ? "M:" : "Minute:"}</span>
 					<div className="movement-buttons-grid">
 						{generateButtons(minuteMovement || 0, "minute")}
 					</div>
@@ -856,33 +819,83 @@ function ClockSection({ data, onChange }) {
 						{/* Bridge - All symbols, use minutes */}
 						<div className="helper-location">
 							<h5>1. Bridge - Minutes</h5>
-							<div className="helper-levers">
-								{[
-									"triangle-up-dash",
-									"triangle-down",
-									"triangle-down-dash",
-									"triangle-up",
-								].map((symbol) => {
-									const clock = clocksBySymbol[symbol];
-									const IconComponent = SYMBOL_ICONS[symbol];
-									return (
-										<div
-											key={symbol}
-											className={`helper-lever ${
-												clock
-													? "helper-lever--available"
-													: "helper-lever--missing"
-											}`}
-										>
-											<div className="helper-symbol">
-												<IconComponent size={24} />
-											</div>
-											<div className="helper-data">
-												{clock ? `${clock.minute || "?"}` : "?"}
-											</div>
+							<div className="helper-levers helper-levers--four">
+								<div className="helper-lever-pair">
+									<span className="lever-position">Left:</span>
+									<div
+										className={`helper-lever ${
+											clocksBySymbol["triangle-up-dash"]
+												? "helper-lever--available"
+												: "helper-lever--missing"
+										}`}
+									>
+										<div className="helper-symbol">
+											{React.createElement(SYMBOL_ICONS["triangle-up-dash"], {
+												size: 24,
+											})}
 										</div>
-									);
-								})}
+										<div className="helper-data">
+											{clocksBySymbol["triangle-up-dash"]?.minute || "?"}
+										</div>
+									</div>
+								</div>
+								<div className="helper-lever-pair">
+									<span className="lever-position">Mid-L:</span>
+									<div
+										className={`helper-lever ${
+											clocksBySymbol["triangle-down"]
+												? "helper-lever--available"
+												: "helper-lever--missing"
+										}`}
+									>
+										<div className="helper-symbol">
+											{React.createElement(SYMBOL_ICONS["triangle-down"], {
+												size: 24,
+											})}
+										</div>
+										<div className="helper-data">
+											{clocksBySymbol["triangle-down"]?.minute || "?"}
+										</div>
+									</div>
+								</div>
+								<div className="helper-lever-pair">
+									<span className="lever-position">Mid-R:</span>
+									<div
+										className={`helper-lever ${
+											clocksBySymbol["triangle-down-dash"]
+												? "helper-lever--available"
+												: "helper-lever--missing"
+										}`}
+									>
+										<div className="helper-symbol">
+											{React.createElement(SYMBOL_ICONS["triangle-down-dash"], {
+												size: 24,
+											})}
+										</div>
+										<div className="helper-data">
+											{clocksBySymbol["triangle-down-dash"]?.minute || "?"}
+										</div>
+									</div>
+								</div>
+								<div className="helper-lever-pair">
+									<span className="lever-position">Right:</span>
+									<div
+										className={`helper-lever ${
+											clocksBySymbol["triangle-up"]
+												? "helper-lever--available"
+												: "helper-lever--missing"
+										}`}
+									>
+										<div className="helper-symbol">
+											{React.createElement(SYMBOL_ICONS["triangle-up"], {
+												size: 24,
+											})}
+										</div>
+										<div className="helper-data">
+											{clocksBySymbol["triangle-up"]?.minute || "?"}
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 
@@ -992,7 +1005,7 @@ function ClockSection({ data, onChange }) {
 							className="preference-select"
 						>
 							<option value="time">Time Format (1:45)</option>
-							<option value="movements">Movement Format (+1/-3)</option>
+							<option value="movements">Integer Format (+1/-3)</option>
 						</select>
 					</div>
 
@@ -1004,10 +1017,10 @@ function ClockSection({ data, onChange }) {
 							onChange={(e) => setInputMethod(e.target.value)}
 							className="preference-select"
 						>
-							<option value="sliders">Movement Sliders</option>
-							<option value="steppers">Movement Steppers</option>
+							<option value="sliders">Sliders(---o---)</option>
+							<option value="steppers">Steppers (-/+)</option>
 							<option value="buttons">Button Layout</option>
-							<option value="text">Text Input Fields</option>
+							<option value="text">Text Fields</option>
 						</select>
 					</div>
 				</div>

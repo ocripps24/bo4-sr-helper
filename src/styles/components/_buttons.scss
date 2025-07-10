@@ -128,13 +128,13 @@
 // Movement buttons
 .movement-btn {
 	@include button-base;
-	padding: space(md) space(lg);
+	padding: space(xs) space(xs);
 	border: 1px solid color(border);
 	background-color: color(background);
 	color: color(text-primary);
 	font-size: font-size(sm);
 	font-weight: font-weight(medium);
-	min-width: 50px;
+	min-width: 25px;
 	text-align: center;
 
 	&:hover:not(.movement-btn--selected) {
@@ -151,8 +151,8 @@
 	}
 
 	@include mobile {
-		min-width: 45px;
-		padding: space(sm) space(md);
+		min-width: 25px;
+		padding: space(xs) space(xs);
 		font-size: font-size(xs);
 	}
 }
