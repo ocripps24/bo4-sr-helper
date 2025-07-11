@@ -90,6 +90,12 @@
 		gap: space(xs); // Tighter spacing on mobile
 	}
 
+	.movement-label {
+		@include mobile {
+			display: none; // Hide label on mobile to save space
+		}
+	}
+
 	.slider-container {
 		@include flex-between;
 		gap: space(sm);
@@ -213,7 +219,7 @@
 		padding: space(sm);
 		border: 1px solid color(border);
 		border-radius: radius(base);
-		background-color: color(surface);
+		background-color: color(background);
 		font-weight: font-weight(medium);
 		font-size: font-size(base);
 

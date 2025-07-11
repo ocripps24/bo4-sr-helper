@@ -539,9 +539,6 @@ function ClockSection({ data, onChange }) {
 						+
 					</button>
 				</div>
-				<div className="stepper-time">
-					{displayFormat === "movements" ? `= ${timeValue}` : ""}
-				</div>
 			</div>
 		);
 	};

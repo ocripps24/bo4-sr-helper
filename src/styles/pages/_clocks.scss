@@ -66,7 +66,9 @@
 // Clock grid layout
 .clock-grid {
 	@include responsive-grid(1, 1, 2, space(lg));
-
+	@include mobile {
+		gap: space(md);
+	}
 	& {
 		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 	}
@@ -107,10 +109,10 @@
 		h4 {
 			margin: 0;
 			color: color(text-primary);
-			font-size: font-size(base);
+			font-size: font-size(xl);
 
 			@include mobile {
-				font-size: font-size(sm);
+				font-size: font-size(base);
 				flex-shrink: 0; // Prevent title from shrinking
 			}
 		}
