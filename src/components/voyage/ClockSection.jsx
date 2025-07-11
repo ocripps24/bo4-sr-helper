@@ -32,7 +32,7 @@ const movementToTime = (movement, type) => {
 		// Hour dial: 0 = 12, +1 = 1, +2 = 2, ..., -1 = 11, -2 = 10
 		let hour = (12 + movement) % 12;
 		if (hour === 0) hour = 12;
-		return hour.toString();
+		return hour.toString().padStart(2, "0");
 	} else {
 		// Minute dial: 0 = 00, +1 = 05, +2 = 10, ..., -1 = 55, -2 = 50
 		let minute = (movement * 5 + 60) % 60;
@@ -371,6 +371,10 @@ function ClockSection({ data, onChange }) {
 		const limits = symbol ? MOVEMENT_LIMITS[symbol] : { min: -5, max: 5 };
 		const timeValue = movementToTime(isDragging ? tempValue : movement, type);
 
+		// Get time values for the limits
+		const minTimeValue = movementToTime(limits.min, type);
+		const maxTimeValue = movementToTime(limits.max, type);
+
 		const handleSliderChange = useCallback(
 			(e) => {
 				const newValue = parseInt(e.target.value);
@@ -407,7 +411,9 @@ function ClockSection({ data, onChange }) {
 					{type === "hour" ? "Hour" : "Minute"}:
 				</span>
 				<div className="slider-container">
-					<span className="slider-limit">{limits.min}</span>
+					<span className="slider-limit">
+						{displayFormat === "movements" ? limits.min : minTimeValue}
+					</span>
 					<input
 						type="range"
 						min={limits.min}
@@ -421,7 +427,9 @@ function ClockSection({ data, onChange }) {
 						onTouchEnd={handleMouseUp}
 						className="movement-range"
 					/>
-					<span className="slider-limit">{limits.max}</span>
+					<span className="slider-limit">
+						{displayFormat === "movements" ? limits.max : maxTimeValue}
+					</span>
 				</div>
 				<div className="movement-display">
 					{displayFormat === "movements"
@@ -835,7 +843,21 @@ function ClockSection({ data, onChange }) {
 											})}
 										</div>
 										<div className="helper-data">
-											{clocksBySymbol["triangle-up-dash"]?.minute || "?"}
+											{clocksBySymbol["triangle-up-dash"]
+												? displayFormat === "movements"
+													? `${
+															clocksBySymbol["triangle-up-dash"]
+																.minuteMovement >= 0
+																? "+"
+																: ""
+													  }${
+															clocksBySymbol["triangle-up-dash"].minuteMovement
+													  }`
+													: movementToTime(
+															clocksBySymbol["triangle-up-dash"].minuteMovement,
+															"minute"
+													  )
+												: "?"}
 										</div>
 									</div>
 								</div>
@@ -854,7 +876,19 @@ function ClockSection({ data, onChange }) {
 											})}
 										</div>
 										<div className="helper-data">
-											{clocksBySymbol["triangle-down"]?.minute || "?"}
+											{clocksBySymbol["triangle-down"]
+												? displayFormat === "movements"
+													? `${
+															clocksBySymbol["triangle-down"].minuteMovement >=
+															0
+																? "+"
+																: ""
+													  }${clocksBySymbol["triangle-down"].minuteMovement}`
+													: movementToTime(
+															clocksBySymbol["triangle-down"].minuteMovement,
+															"minute"
+													  )
+												: "?"}
 										</div>
 									</div>
 								</div>
@@ -873,7 +907,23 @@ function ClockSection({ data, onChange }) {
 											})}
 										</div>
 										<div className="helper-data">
-											{clocksBySymbol["triangle-down-dash"]?.minute || "?"}
+											{clocksBySymbol["triangle-down-dash"]
+												? displayFormat === "movements"
+													? `${
+															clocksBySymbol["triangle-down-dash"]
+																.minuteMovement >= 0
+																? "+"
+																: ""
+													  }${
+															clocksBySymbol["triangle-down-dash"]
+																.minuteMovement
+													  }`
+													: movementToTime(
+															clocksBySymbol["triangle-down-dash"]
+																.minuteMovement,
+															"minute"
+													  )
+												: "?"}
 										</div>
 									</div>
 								</div>
@@ -892,7 +942,18 @@ function ClockSection({ data, onChange }) {
 											})}
 										</div>
 										<div className="helper-data">
-											{clocksBySymbol["triangle-up"]?.minute || "?"}
+											{clocksBySymbol["triangle-up"]
+												? displayFormat === "movements"
+													? `${
+															clocksBySymbol["triangle-up"].minuteMovement >= 0
+																? "+"
+																: ""
+													  }${clocksBySymbol["triangle-up"].minuteMovement}`
+													: movementToTime(
+															clocksBySymbol["triangle-up"].minuteMovement,
+															"minute"
+													  )
+												: "?"}
 										</div>
 									</div>
 								</div>
@@ -918,7 +979,19 @@ function ClockSection({ data, onChange }) {
 											})}
 										</div>
 										<div className="helper-data">
-											{clocksBySymbol["triangle-up-dash"]?.hour || "?"}
+											{clocksBySymbol["triangle-up-dash"]
+												? displayFormat === "movements"
+													? `${
+															clocksBySymbol["triangle-up-dash"].hourMovement >=
+															0
+																? "+"
+																: ""
+													  }${clocksBySymbol["triangle-up-dash"].hourMovement}`
+													: movementToTime(
+															clocksBySymbol["triangle-up-dash"].hourMovement,
+															"hour"
+													  )
+												: "?"}
 										</div>
 									</div>
 								</div>
@@ -937,7 +1010,21 @@ function ClockSection({ data, onChange }) {
 											})}
 										</div>
 										<div className="helper-data">
-											{clocksBySymbol["triangle-down-dash"]?.hour || "?"}
+											{clocksBySymbol["triangle-down-dash"]
+												? displayFormat === "movements"
+													? `${
+															clocksBySymbol["triangle-down-dash"]
+																.hourMovement >= 0
+																? "+"
+																: ""
+													  }${
+															clocksBySymbol["triangle-down-dash"].hourMovement
+													  }`
+													: movementToTime(
+															clocksBySymbol["triangle-down-dash"].hourMovement,
+															"hour"
+													  )
+												: "?"}
 										</div>
 									</div>
 								</div>
@@ -963,7 +1050,18 @@ function ClockSection({ data, onChange }) {
 											})}
 										</div>
 										<div className="helper-data">
-											{clocksBySymbol["triangle-up"]?.hour || "?"}
+											{clocksBySymbol["triangle-up"]
+												? displayFormat === "movements"
+													? `${
+															clocksBySymbol["triangle-up"].hourMovement >= 0
+																? "+"
+																: ""
+													  }${clocksBySymbol["triangle-up"].hourMovement}`
+													: movementToTime(
+															clocksBySymbol["triangle-up"].hourMovement,
+															"hour"
+													  )
+												: "?"}
 										</div>
 									</div>
 								</div>
@@ -982,7 +1080,18 @@ function ClockSection({ data, onChange }) {
 											})}
 										</div>
 										<div className="helper-data">
-											{clocksBySymbol["triangle-down"]?.hour || "?"}
+											{clocksBySymbol["triangle-down"]
+												? displayFormat === "movements"
+													? `${
+															clocksBySymbol["triangle-down"].hourMovement >= 0
+																? "+"
+																: ""
+													  }${clocksBySymbol["triangle-down"].hourMovement}`
+													: movementToTime(
+															clocksBySymbol["triangle-down"].hourMovement,
+															"hour"
+													  )
+												: "?"}
 										</div>
 									</div>
 								</div>
