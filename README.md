@@ -15,7 +15,7 @@ A high-performance web application to help speedrunners track essential data whi
 
 ## Live Demo
 
-Visit the live app: [https://yourusername.github.io/bo4-sr-helper/](https://yourusername.github.io/bo4-sr-helper/)
+Visit the live app: [https://bo4-sr-tool.com/](https://bo4-sr-tool.com/)
 
 ## Local Development
 
@@ -53,31 +53,6 @@ npm run dev
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build locally
 - `npm run deploy` - Deploy to GitHub Pages (manual)
-
-## Usage Guide
-
-### Voyage of Despair
-
-#### Clock Section
-
-1. **Select 4 locations** from the 6 available clock spawn points
-2. **Record times** in any format (e.g., "3:15", "12:30")
-3. **Choose symbols** - each symbol can only be used once
-4. Smart symbol management prevents duplicates
-
-#### Outlet Section
-
-1. **Add outlets** as you find them using the "+ Add Outlet" button
-2. **Select location** from the dropdown
-3. **Choose catalyst type** (Water, Fire, Lightning, Earth)
-4. Remove outlets with the "×" button if needed
-
-#### Planet Section
-
-1. **Click planets** in the order they appear
-2. **Reorder** using the ↑↓ buttons
-3. **Remove** individual planets with the "×" button
-4. **Clear all** to start over
 
 ## Deployment
 
