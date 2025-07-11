@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "../../styles/main.scss";
 
 function SettingsPage() {
 	const location = useLocation();
@@ -20,7 +19,8 @@ function SettingsPage() {
 			const referrerPath = referrer.replace(currentOrigin, "");
 			// If it's a voyage page but not settings, return there
 			if (
-				referrerPath.startsWith("/voyage-of-despair") &&
+				(referrerPath.startsWith("/bo4/voyage-of-despair") ||
+					referrerPath.startsWith("/voyage-of-despair")) &&
 				!referrerPath.includes("/settings")
 			) {
 				return referrerPath;
@@ -28,7 +28,7 @@ function SettingsPage() {
 		}
 
 		// Final fallback to clocks
-		return "/voyage-of-despair/clocks";
+		return "/bo4/voyage-of-despair";
 	};
 
 	const returnPath = getReturnPath();

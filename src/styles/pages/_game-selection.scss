@@ -1,0 +1,301 @@
+// Import abstracts for functions, mixins, and variables
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as *;
+@use "../abstracts/mixins" as *;
+
+// Game Selection Page Styles
+.game-selection {
+	padding: spacing(6) spacing(4);
+	max-width: 1200px;
+	margin: 0 auto;
+
+	@include mobile {
+		padding: spacing(4) spacing(3);
+	}
+
+	.game-selection-header {
+		text-align: center;
+		margin-bottom: spacing(8);
+
+		h2 {
+			color: color(text-primary);
+			margin-bottom: spacing(2);
+			font-size: 2.5rem;
+			font-weight: 700;
+
+			@include mobile {
+				font-size: 2rem;
+			}
+		}
+
+		p {
+			color: color(text-secondary);
+			font-size: 1.125rem;
+			max-width: 600px;
+			margin: 0 auto;
+			line-height: 1.6;
+
+			@include mobile {
+				font-size: 1rem;
+			}
+		}
+	}
+
+	.game-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		gap: spacing(6);
+		margin: spacing(8) 0;
+
+		@include mobile {
+			grid-template-columns: 1fr;
+			gap: spacing(4);
+			margin: spacing(6) 0;
+		}
+	}
+
+	.game-card {
+		background: color(surface);
+		border: 1px solid color(border);
+		border-radius: radius(lg);
+		overflow: hidden;
+		transition: transition(base);
+		box-shadow: shadow(sm);
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: shadow(lg);
+			border-color: color(border-focus);
+
+			.game-card-arrow {
+				transform: translateX(spacing(1));
+			}
+		}
+
+		.game-card-link {
+			display: block;
+			text-decoration: none;
+			color: inherit;
+			height: 100%;
+		}
+
+		.game-card-content {
+			padding: spacing(6);
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+
+			@include mobile {
+				padding: spacing(4);
+			}
+		}
+
+		.game-card-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			margin-bottom: spacing(3);
+		}
+
+		.game-card-title {
+			color: color(text-primary);
+			font-size: 1.5rem;
+			font-weight: 600;
+			margin: 0;
+
+			@include mobile {
+				font-size: 1.25rem;
+			}
+		}
+
+		.game-card-year {
+			background: color(primary);
+			color: white;
+			padding: spacing(1) spacing(2);
+			border-radius: radius(sm);
+			font-size: 0.875rem;
+			font-weight: 500;
+		}
+
+		.game-card-description {
+			color: color(text-secondary);
+			font-size: 1rem;
+			line-height: 1.5;
+			margin-bottom: spacing(4);
+			flex-grow: 1;
+		}
+
+		.game-card-footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-top: auto;
+		}
+
+		.game-card-full-name {
+			color: color(text-secondary);
+			font-size: 0.875rem;
+			font-style: italic;
+		}
+
+		.game-card-arrow {
+			color: color(primary);
+			font-size: 1.5rem;
+			font-weight: bold;
+			transition: transition(base);
+		}
+	}
+}
+
+// Enhanced Map Selection for Game-Specific Views
+.map-selection {
+	.back-btn {
+		margin-bottom: spacing(4);
+
+		@include mobile {
+			margin-bottom: spacing(3);
+		}
+	}
+
+	.map-card-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		margin-bottom: spacing(2);
+	}
+
+	.map-card-difficulty {
+		padding: spacing(1) spacing(2);
+		border-radius: radius(sm);
+		font-size: 0.75rem;
+		font-weight: 500;
+		text-transform: uppercase;
+
+		&.easy {
+			background: color(success);
+			color: white;
+		}
+
+		&.medium {
+			background: color(warning);
+			color: white;
+		}
+
+		&.hard {
+			background: color(danger);
+			color: white;
+		}
+	}
+
+	.map-card-tools {
+		margin-bottom: spacing(2);
+
+		.tools-label {
+			color: color(text-secondary);
+			font-size: 0.875rem;
+			font-weight: 500;
+		}
+
+		.tools-list {
+			color: color(text-primary);
+			font-size: 0.875rem;
+			margin-left: spacing(1);
+		}
+	}
+}
+
+// Terminus placeholder styles
+.terminus-page {
+	.placeholder-content {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: spacing(8) spacing(4);
+		text-align: center;
+
+		@include mobile {
+			padding: spacing(6) spacing(3);
+		}
+
+		h2 {
+			color: color(text-primary);
+			font-size: 2.5rem;
+			margin-bottom: spacing(4);
+
+			@include mobile {
+				font-size: 2rem;
+			}
+		}
+
+		p {
+			color: color(text-secondary);
+			font-size: 1.125rem;
+			line-height: 1.6;
+			margin-bottom: spacing(4);
+
+			@include mobile {
+				font-size: 1rem;
+			}
+		}
+
+		.planned-features {
+			background: color(surface);
+			border: 1px solid color(border);
+			border-radius: radius(md);
+			padding: spacing(6);
+			margin: spacing(6) 0;
+			text-align: left;
+
+			@include mobile {
+				padding: spacing(4);
+				margin: spacing(4) 0;
+			}
+
+			h3 {
+				color: color(text-primary);
+				font-size: 1.25rem;
+				margin-bottom: spacing(3);
+				text-align: center;
+			}
+
+			ul {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+
+				li {
+					color: color(text-secondary);
+					padding: spacing(2) 0;
+					border-bottom: 1px solid color(border);
+
+					&:last-child {
+						border-bottom: none;
+					}
+
+					&:before {
+						content: "🔧";
+						margin-right: spacing(2);
+					}
+				}
+			}
+		}
+
+		.development-note {
+			background: color(primary);
+			color: white;
+			padding: spacing(4);
+			border-radius: radius(md);
+			margin-top: spacing(6);
+
+			@include mobile {
+				padding: spacing(3);
+				margin-top: spacing(4);
+			}
+
+			p {
+				margin: 0;
+				color: white;
+				font-size: 1rem;
+			}
+		}
+	}
+}

@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import "../../styles/main.scss";
 
 const OUTLET_LOCATIONS = [
 	{ id: "state-rooms", name: "State Rooms" },

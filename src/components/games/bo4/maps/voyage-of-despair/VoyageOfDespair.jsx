@@ -6,29 +6,28 @@ import {
 	useNavigate,
 	useLocation,
 } from "react-router-dom";
-import ClockSection from "./voyage/ClockSection";
-import OutletSection from "./voyage/OutletSection";
-import PlanetSection from "./voyage/PlanetSection";
-import SettingsPage from "./voyage/SettingsPage";
-import "../styles/main.scss";
+import ClockSection from "./sections/ClockSection";
+import OutletSection from "./sections/OutletSection";
+import PlanetSection from "./sections/PlanetSection";
+import SettingsPage from "./sections/SettingsPage";
 
 const STEPS = [
 	{
 		id: "clocks",
 		name: "Clocks",
-		path: "/voyage-of-despair/clocks",
+		path: "/bo4/voyage-of-despair/clocks",
 		component: ClockSection,
 	},
 	{
 		id: "outlets",
 		name: "Outlets",
-		path: "/voyage-of-despair/outlets",
+		path: "/bo4/voyage-of-despair/outlets",
 		component: OutletSection,
 	},
 	{
 		id: "planets",
 		name: "Planets",
-		path: "/voyage-of-despair/planets",
+		path: "/bo4/voyage-of-despair/planets",
 		component: PlanetSection,
 	},
 ];
@@ -48,7 +47,7 @@ function VoyageOfDespair() {
 	// Handle active step logic - consider settings page context
 	const getActiveStepIndex = () => {
 		// If we're on settings page, try to determine which step to highlight
-		if (currentPath === "/voyage-of-despair/settings") {
+		if (currentPath === "/bo4/voyage-of-despair/settings") {
 			// Check if we have navigation state indicating where we came from
 			if (location.state?.returnTo) {
 				const returnStepIndex = STEPS.findIndex(
@@ -59,22 +58,29 @@ function VoyageOfDespair() {
 				}
 			}
 			// Fallback: try to determine from the last non-settings page in session storage
-			const lastStep = sessionStorage.getItem("voyage-last-step");
+			const lastStep = sessionStorage.getItem("bo4-voyage-last-step");
 			if (lastStep) {
 				const lastStepIndex = STEPS.findIndex((step) => step.path === lastStep);
 				if (lastStepIndex >= 0) {
 					return lastStepIndex;
 				}
 			}
+			// Final fallback if on settings - return 0 (clocks)
+			return 0;
 		} else {
-			// Store the current step if it's not settings
+			// Store the current step if it's not settings and we found a valid step
 			if (currentStepIndex >= 0) {
-				sessionStorage.setItem("voyage-last-step", currentPath);
+				sessionStorage.setItem("bo4-voyage-last-step", currentPath);
+				return currentStepIndex;
+			}
+			// If we're at the base voyage path, default to clocks
+			if (currentPath === "/bo4/voyage-of-despair") {
+				return 0;
 			}
 		}
 
 		// Default logic: if step found, use it; otherwise default to clocks (index 0)
-		return currentStepIndex >= 0 ? currentStepIndex : 0;
+		return 0;
 	};
 
 	const activeStepIndex = getActiveStepIndex();
@@ -97,7 +103,13 @@ function VoyageOfDespair() {
 	};
 
 	const goToStep = (stepPath) => {
-		navigate(stepPath);
+		// If we're currently on settings page, we need to navigate away from settings first
+		if (currentPath.endsWith("/settings")) {
+			// Navigate to the step and close settings
+			navigate(stepPath);
+		} else {
+			navigate(stepPath);
+		}
 	};
 
 	const goToNext = () => {
@@ -146,13 +158,13 @@ function VoyageOfDespair() {
 		<div className="voyage-page">
 			<div className="voyage-header">
 				<div className="voyage-nav">
-					<Link to="/" className="btn btn-secondary">
-						<span className="btn-text">← Back to Maps</span>
+					<Link to="/bo4" className="btn btn-secondary">
+						<span className="btn-text">← Back to BO4 Maps</span>
 						<span className="btn-icon">←</span>
 					</Link>
 					<div className="nav-right">
 						<Link
-							to="/voyage-of-despair/settings"
+							to="/bo4/voyage-of-despair/settings"
 							state={{ returnTo: currentPath }}
 							className="btn btn-secondary settings-btn"
 						>
@@ -191,7 +203,7 @@ function VoyageOfDespair() {
 			<div className="voyage-content">
 				<Routes>
 					{/* Settings route */}
-					<Route path="/settings" element={<SettingsPage />} />
+					<Route path="settings" element={<SettingsPage />} />
 
 					{/* Default route - show ClockSection when no sub-path */}
 					<Route
@@ -200,43 +212,63 @@ function VoyageOfDespair() {
 							<ClockSection
 								data={getStepData("clocks")}
 								onChange={getStepOnChange("clocks")}
+								onNext={goToNext}
+								onPrevious={goToPrevious}
+								currentStep={activeStepIndex}
+								totalSteps={STEPS.length}
 							/>
 						}
 					/>
-					{STEPS.map((step) => {
-						const StepComponent = step.component;
-						return (
-							<Route
-								key={step.id}
-								path={step.path.replace("/voyage-of-despair", "")}
-								element={
-									<StepComponent
-										data={getStepData(step.id)}
-										onChange={getStepOnChange(step.id)}
-									/>
-								}
-							/>
-						);
-					})}
-				</Routes>
-			</div>
 
-			{/* Step Controls - Now at bottom of page */}
-			<div className="step-controls">
-				<button
-					onClick={goToPrevious}
-					disabled={activeStepIndex === 0}
-					className="btn btn-secondary"
-				>
-					← Previous
-				</button>
-				<button
-					onClick={goToNext}
-					disabled={activeStepIndex === STEPS.length - 1}
-					className="btn btn-primary"
-				>
-					Next →
-				</button>
+					{/* Individual step routes */}
+					{STEPS.map((step) => (
+						<Route
+							key={step.id}
+							path={step.id}
+							element={
+								<step.component
+									data={getStepData(step.id)}
+									onChange={getStepOnChange(step.id)}
+									onNext={goToNext}
+									onPrevious={goToPrevious}
+									currentStep={activeStepIndex}
+									totalSteps={STEPS.length}
+								/>
+							}
+						/>
+					))}
+				</Routes>
+
+				{/* Navigation buttons - Only show if not on settings page */}
+				{!currentPath.endsWith("/settings") && (
+					<div className="voyage-navigation">
+						<div className="navigation-buttons">
+							<button
+								onClick={goToPrevious}
+								disabled={activeStepIndex === 0}
+								className="btn btn-secondary nav-btn"
+							>
+								<span className="btn-text">← Previous</span>
+								<span className="btn-icon">←</span>
+							</button>
+
+							<div className="step-indicator">
+								<span className="current-step">{activeStepIndex + 1}</span>
+								<span className="step-separator">of</span>
+								<span className="total-steps">{STEPS.length}</span>
+							</div>
+
+							<button
+								onClick={goToNext}
+								disabled={activeStepIndex === STEPS.length - 1}
+								className="btn btn-primary nav-btn"
+							>
+								<span className="btn-text">Next →</span>
+								<span className="btn-icon">→</span>
+							</button>
+						</div>
+					</div>
+				)}
 			</div>
 		</div>
 	);

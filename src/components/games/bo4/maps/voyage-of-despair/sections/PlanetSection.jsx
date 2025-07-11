@@ -17,7 +17,6 @@ import {
 	useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import "../../styles/main.scss";
 
 const PLANETS = [
 	"Mercury",

@@ -144,7 +144,56 @@
 	margin-bottom: 2rem; /* Add bottom margin for footer spacing */
 }
 
-/* Step Controls - Now at bottom of page */
+/* Navigation Buttons - At bottom of page */
+.voyage-navigation {
+	margin-top: 2rem;
+	padding: 1.5rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	background-color: var(--surface);
+}
+
+.navigation-buttons {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+}
+
+.nav-btn {
+	flex: 0 0 auto;
+	min-width: 120px;
+
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+}
+
+.step-indicator {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 1rem;
+	color: var(--text-secondary);
+	font-weight: 500;
+}
+
+.current-step {
+	color: var(--primary-color);
+	font-weight: 700;
+	font-size: 1.125rem;
+}
+
+.step-separator {
+	color: var(--text-secondary);
+}
+
+.total-steps {
+	color: var(--text-secondary);
+}
+
+/* Legacy step controls - keep for backward compatibility */
 .step-controls {
 	display: flex;
 	justify-content: space-between;
@@ -198,6 +247,31 @@
 		flex: 0 0 auto; /* Don't grow equally */
 		min-width: 40px;
 		padding: 0.5rem 0.25rem;
+	}
+
+	/* Navigation buttons responsive */
+	.voyage-navigation {
+		margin-top: 1.5rem;
+		padding: 1rem;
+	}
+
+	.navigation-buttons {
+		gap: 0.5rem;
+	}
+
+	.nav-btn {
+		min-width: 80px;
+		font-size: 0.875rem;
+		padding: 0.5rem 0.75rem;
+	}
+
+	.step-indicator {
+		font-size: 0.875rem;
+		gap: 0.25rem;
+	}
+
+	.current-step {
+		font-size: 1rem;
 	}
 
 	/* Non-active tabs: fixed size */
