@@ -9,6 +9,7 @@ import {
 import ClockSection from "./voyage/ClockSection";
 import OutletSection from "./voyage/OutletSection";
 import PlanetSection from "./voyage/PlanetSection";
+import SettingsPage from "./voyage/SettingsPage";
 import "../styles/main.scss";
 
 const STEPS = [
@@ -44,8 +45,39 @@ function VoyageOfDespair() {
 	const currentPath = location.pathname;
 	const currentStepIndex = STEPS.findIndex((step) => step.path === currentPath);
 
-	// If no step found (e.g., on base path), default to clocks (index 0)
-	const activeStepIndex = currentStepIndex >= 0 ? currentStepIndex : 0;
+	// Handle active step logic - consider settings page context
+	const getActiveStepIndex = () => {
+		// If we're on settings page, try to determine which step to highlight
+		if (currentPath === "/voyage-of-despair/settings") {
+			// Check if we have navigation state indicating where we came from
+			if (location.state?.returnTo) {
+				const returnStepIndex = STEPS.findIndex(
+					(step) => step.path === location.state.returnTo
+				);
+				if (returnStepIndex >= 0) {
+					return returnStepIndex;
+				}
+			}
+			// Fallback: try to determine from the last non-settings page in session storage
+			const lastStep = sessionStorage.getItem("voyage-last-step");
+			if (lastStep) {
+				const lastStepIndex = STEPS.findIndex((step) => step.path === lastStep);
+				if (lastStepIndex >= 0) {
+					return lastStepIndex;
+				}
+			}
+		} else {
+			// Store the current step if it's not settings
+			if (currentStepIndex >= 0) {
+				sessionStorage.setItem("voyage-last-step", currentPath);
+			}
+		}
+
+		// Default logic: if step found, use it; otherwise default to clocks (index 0)
+		return currentStepIndex >= 0 ? currentStepIndex : 0;
+	};
+
+	const activeStepIndex = getActiveStepIndex();
 	const currentStep = STEPS[activeStepIndex];
 
 	const handleReset = () => {
@@ -115,11 +147,26 @@ function VoyageOfDespair() {
 			<div className="voyage-header">
 				<div className="voyage-nav">
 					<Link to="/" className="btn btn-secondary">
-						← Back to Maps
+						<span className="btn-text">← Back to Maps</span>
+						<span className="btn-icon">←</span>
 					</Link>
-					<button onClick={handleReset} className="btn btn-secondary reset-btn">
-						Reset All Data
-					</button>
+					<div className="nav-right">
+						<Link
+							to="/voyage-of-despair/settings"
+							state={{ returnTo: currentPath }}
+							className="btn btn-secondary settings-btn"
+						>
+							<span className="btn-text">⚙️ Options</span>
+							<span className="btn-icon">⚙️</span>
+						</Link>
+						<button
+							onClick={handleReset}
+							className="btn btn-secondary reset-btn"
+						>
+							<span className="btn-text">🗑️ Reset All Data</span>
+							<span className="btn-icon">🗑️</span>
+						</button>
+					</div>
 				</div>
 
 				{/* Step Navigation - Only tabs now */}
@@ -143,6 +190,9 @@ function VoyageOfDespair() {
 
 			<div className="voyage-content">
 				<Routes>
+					{/* Settings route */}
+					<Route path="/settings" element={<SettingsPage />} />
+
 					{/* Default route - show ClockSection when no sub-path */}
 					<Route
 						path="/"

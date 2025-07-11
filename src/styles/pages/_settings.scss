@@ -1,0 +1,106 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/functions" as *;
+@use "../abstracts/mixins" as *;
+
+.settings-page {
+	max-width: 1000px;
+	margin: 0 auto;
+	padding: space(lg);
+	@include card;
+}
+
+.settings-header {
+	@include flex-between;
+	margin-bottom: space(3xl);
+
+	h2 {
+		color: color(primary);
+		margin: 0;
+	}
+
+	@include mobile {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: space(md);
+
+		.btn {
+			align-self: flex-end;
+		}
+	}
+}
+
+.settings-content {
+	@include flex-column;
+	gap: space(3xl);
+}
+
+.settings-section {
+	@include flex-column;
+	gap: space(lg);
+
+	h3 {
+		color: color(text-primary);
+		margin: 0;
+		font-size: font-size(xl);
+	}
+}
+
+.settings-description {
+	color: color(text-secondary);
+	font-size: font-size(base);
+	margin: 0;
+}
+
+.settings-card {
+	@include card;
+
+	h4 {
+		color: color(text-primary);
+		margin: 0 0 space(lg) 0;
+		font-size: font-size(lg);
+	}
+}
+
+.setting-group {
+	@include flex-column;
+	gap: space(sm);
+	margin-bottom: space(lg);
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+
+	label {
+		font-weight: font-weight(medium);
+		color: color(text-primary);
+		font-size: font-size(base);
+	}
+}
+
+.setting-select {
+	padding: space(md);
+	border: 1px solid color(border);
+	border-radius: radius(base);
+	background-color: color(background);
+	color: color(text-primary);
+	font-size: font-size(base);
+	transition: transition(base);
+
+	&:focus {
+		outline: none;
+		border-color: color(border-focus);
+		box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+	}
+
+	&:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+		background-color: color(surface);
+	}
+}
+
+.setting-note {
+	font-size: font-size(sm);
+	color: color(text-secondary);
+	font-style: italic;
+}

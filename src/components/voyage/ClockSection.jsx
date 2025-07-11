@@ -80,12 +80,9 @@ function ClockSection({ data, onChange }) {
 	const [localData, setLocalData] = useState(data || getInitialData());
 	const isInitializing = useRef(true);
 
-	// UI preference states
-	const [displayFormat, setDisplayFormat] = useState("time"); // 'time' or 'movements'
-	const [inputMethod, setInputMethod] = useState(() => {
-		// Default to sliders for all devices - they work great on mobile with touch
-		return "sliders";
-	}); // 'sliders', 'steppers', 'text', 'buttons'
+	// UI preference states - loaded from settings
+	const [displayFormat, setDisplayFormat] = useState("time");
+	const [inputMethod, setInputMethod] = useState("sliders");
 
 	// Load from localStorage on mount or when parent data changes (reset)
 	useEffect(() => {
@@ -180,6 +177,50 @@ function ClockSection({ data, onChange }) {
 			isInitializing.current = false;
 		}
 	}, [localData]); // Removed onChange from dependencies to prevent infinite loop
+
+	// Load UI preferences from settings
+	useEffect(() => {
+		const loadSettings = () => {
+			const savedSettings = localStorage.getItem("voyage-clocks-settings");
+			if (savedSettings) {
+				try {
+					const settings = JSON.parse(savedSettings);
+					setDisplayFormat(settings.displayFormat || "time");
+					setInputMethod(settings.inputMethod || "sliders");
+				} catch (e) {
+					console.error("Failed to parse clock settings:", e);
+				}
+			}
+		};
+
+		// Load settings on mount
+		loadSettings();
+
+		// Listen for storage changes (when settings are updated in another tab)
+		const handleStorageChange = (e) => {
+			if (e.key === "voyage-clocks-settings") {
+				loadSettings();
+			}
+		};
+
+		// Listen for custom events (when settings are updated in the same tab)
+		const handleSettingsChange = (e) => {
+			const { setting, value } = e.detail;
+			if (setting === "displayFormat") {
+				setDisplayFormat(value);
+			} else if (setting === "inputMethod") {
+				setInputMethod(value);
+			}
+		};
+
+		window.addEventListener("storage", handleStorageChange);
+		window.addEventListener("clockSettingsChanged", handleSettingsChange);
+
+		return () => {
+			window.removeEventListener("storage", handleStorageChange);
+			window.removeEventListener("clockSettingsChanged", handleSettingsChange);
+		};
+	}, []);
 
 	// Validation functions
 	const isMovementValid = (movement, symbol) => {
@@ -1100,40 +1141,6 @@ function ClockSection({ data, onChange }) {
 					</div>
 				</div>
 			)}
-
-			{/* UI Preference Controls */}
-			<div className="clock-preferences">
-				<h4>Display Options</h4>
-				<div className="preference-controls">
-					<div className="preference-group">
-						<label htmlFor="display-format">Display Format:</label>
-						<select
-							id="display-format"
-							value={displayFormat}
-							onChange={(e) => setDisplayFormat(e.target.value)}
-							className="preference-select"
-						>
-							<option value="time">Time Format (1:45)</option>
-							<option value="movements">Integer Format (+1/-3)</option>
-						</select>
-					</div>
-
-					<div className="preference-group">
-						<label htmlFor="input-method">Input Method:</label>
-						<select
-							id="input-method"
-							value={inputMethod}
-							onChange={(e) => setInputMethod(e.target.value)}
-							className="preference-select"
-						>
-							<option value="sliders">Sliders(---o---)</option>
-							<option value="steppers">Steppers (-/+)</option>
-							<option value="buttons">Button Layout</option>
-							<option value="text">Text Fields</option>
-						</select>
-					</div>
-				</div>
-			</div>
 		</div>
 	);
 }
