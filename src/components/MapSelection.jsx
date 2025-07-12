@@ -56,11 +56,6 @@ function MapSelection({ gameId }) {
 								<div className="map-card-content">
 									<div className="map-card-header">
 										<h3 className="map-card-title">{map.name}</h3>
-										{map.difficulty && (
-											<span className={`map-card-difficulty ${map.difficulty}`}>
-												{map.difficulty}
-											</span>
-										)}
 									</div>
 									<p className="map-card-description">{map.description}</p>
 									{map.tools && map.tools.length > 0 && (
@@ -76,11 +71,6 @@ function MapSelection({ gameId }) {
 							<div className="map-card-content">
 								<div className="map-card-header">
 									<h3 className="map-card-title">{map.name}</h3>
-									{map.difficulty && (
-										<span className={`map-card-difficulty ${map.difficulty}`}>
-											{map.difficulty}
-										</span>
-									)}
 								</div>
 								<p className="map-card-description">{map.description}</p>
 								<div className="map-card-status">Coming Soon</div>
