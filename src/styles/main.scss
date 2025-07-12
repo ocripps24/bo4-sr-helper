@@ -25,6 +25,7 @@
 @use "pages/map-selection";
 @use "pages/settings";
 @use "pages/game-selection";
+@use "pages/terminus";
 
 // Legacy CSS custom properties for fallback
 :root {
@@ -44,4 +45,22 @@
 	--shadow-lg: #{shadow(lg)};
 	--radius: #{radius(base)};
 	--transition: #{transition(base)};
+
+	// Additional variables for terminus and other components
+	--card-bg: #{color(surface)};
+	--input-bg: #{color(background)};
+	--text-color: #{color(text-primary)};
+	--text-muted: #{color(text-secondary)};
+	--border-color: #{color(border)};
+	--hover-bg: rgba(100, 116, 139, 0.1);
+
+	// Success theme
+	--success-bg: rgba(22, 163, 74, 0.1);
+	--success-border: rgba(22, 163, 74, 0.2);
+	--success-light-bg: rgba(22, 163, 74, 0.05);
+
+	// Info theme
+	--info-bg: rgba(37, 99, 235, 0.1);
+	--info-border: rgba(37, 99, 235, 0.2);
+	--info-color: #{color(primary)};
 }
