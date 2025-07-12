@@ -57,10 +57,10 @@ function MapSelection({ gameId }) {
 									<div className="map-card-header">
 										<h3 className="map-card-title">{map.name}</h3>
 									</div>
-									<p className="map-card-description">{map.description}</p>
+									<p className="map-card-description">{map.status}</p>
 									{map.tools && map.tools.length > 0 && (
 										<div className="map-card-tools">
-											<span className="tools-label">Tools:</span>
+											<span className="tools-label">Tools: </span>
 											<span className="tools-list">{map.tools.join(", ")}</span>
 										</div>
 									)}
@@ -72,8 +72,13 @@ function MapSelection({ gameId }) {
 								<div className="map-card-header">
 									<h3 className="map-card-title">{map.name}</h3>
 								</div>
-								<p className="map-card-description">{map.description}</p>
-								<div className="map-card-status">Coming Soon</div>
+								{map.tools && map.tools.length > 0 && (
+									<div className="map-card-tools">
+										<span className="tools-label">Tools: </span>
+										<span className="tools-list">{map.tools.join(", ")}</span>
+									</div>
+								)}
+								<div className="map-card-status">{map.status}</div>
 							</div>
 						)}
 					</div>
