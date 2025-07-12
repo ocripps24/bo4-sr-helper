@@ -332,8 +332,9 @@
 
 					&.selected {
 						border-color: var(--primary-color);
-						background: var(--primary-color);
-						color: white;
+						background: var(--card-bg);
+						color: inherit;
+						box-shadow: 0 0 0 2px var(--primary-color) inset;
 					}
 
 					.beam-symbol {
@@ -418,6 +419,15 @@
 			}
 		}
 	}
+}
+
+.symbol-button.disabled,
+.symbol-button:disabled {
+	background: var(--symbol-disabled-bg);
+	border-color: var(--symbol-disabled-bg);
+	color: var(--symbol-disabled);
+	cursor: not-allowed;
+	pointer-events: none;
 }
 
 // Responsive design
@@ -534,8 +544,9 @@
 
 					&.selected {
 						border-color: var(--primary-color);
-						background: var(--primary-color);
-						color: white;
+						background: var(--card-bg);
+						color: inherit;
+						box-shadow: 0 0 0 2px var(--primary-color) inset;
 					}
 
 					.beam-symbol {

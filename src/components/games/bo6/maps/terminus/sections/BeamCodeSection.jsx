@@ -68,9 +68,9 @@ function BeamCodeSection({
 
 		if (x === null || y === null || z === null) return null;
 
-		const equation1 = 2 * x + 11;
-		const equation2 = 2 * z + y - 5;
-		const equation3 = y + z - x;
+		const equation1 = 2 * x + 11; // 2(X) + 11
+		const equation2 = 2 * z + y - 5; // (2Z + Y) - 5
+		const equation3 = Math.abs(y + z - x); // |(Y + Z) - X|
 
 		return {
 			equation1,
@@ -96,6 +96,7 @@ function BeamCodeSection({
 
 	const status = getCompletionStatus();
 	const results = calculateEquations();
+	const usedSymbols = Object.values(localData).filter(Boolean);
 
 	return (
 		<div className="beam-code-section">
@@ -116,17 +117,26 @@ function BeamCodeSection({
 						</div>
 
 						<div className="symbol-grid">
-							{SYMBOL_DATA.map((symbol) => (
-								<button
-									key={symbol.id}
-									className={`symbol-button ${
-										localData[location.id] === symbol.id ? "selected" : ""
-									}`}
-									onClick={() => handleSymbolSelect(location.id, symbol.id)}
-								>
-									{BeamSymbols[symbol.id]}
-								</button>
-							))}
+							{SYMBOL_DATA.map((symbol) => {
+								// Is this symbol already used in another row?
+								const isUsedElsewhere =
+									usedSymbols.includes(symbol.id) &&
+									localData[location.id] !== symbol.id;
+
+								return (
+									<button
+										key={symbol.id}
+										className={`symbol-button ${
+											localData[location.id] === symbol.id ? "selected" : ""
+										}${isUsedElsewhere ? " disabled" : ""}`}
+										onClick={() => handleSymbolSelect(location.id, symbol.id)}
+										disabled={isUsedElsewhere}
+										tabIndex={isUsedElsewhere ? -1 : 0}
+									>
+										{BeamSymbols[symbol.id]}
+									</button>
+								);
+							})}
 						</div>
 					</div>
 				))}
